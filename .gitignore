@@ -4,9 +4,7 @@ node_modules/
 .superpowers/
 .playwright-mcp/
 .agents/
-secrets/*
-!secrets/
-!secrets/README.md
+secrets/
 *.png.bak
 
 # macOS Finder metadata
