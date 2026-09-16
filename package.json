@@ -12,7 +12,8 @@
     "package:community": "node scripts/sync-rules.mjs && node scripts/build-dist.mjs --channel community-dev && node scripts/package-zip.mjs --channel community-dev",
     "sync:rules": "node scripts/sync-rules.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "package:edge": "node scripts/sync-rules.mjs && node scripts/build-dist.mjs --channel store && node scripts/package-zip.mjs --channel store --target edge"
   },
   "devDependencies": {
     "playwright": "^1.59.1",

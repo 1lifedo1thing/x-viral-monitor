@@ -5,6 +5,8 @@ node_modules/
 .playwright-mcp/
 .agents/
 secrets/
+# Maintainer-only store publishing script (names the publisher / service account)
+/scripts/upload-webstore.mjs
 *.png.bak
 
 # macOS Finder metadata
