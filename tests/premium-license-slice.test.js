@@ -14,7 +14,9 @@ const repo = resolve(here, '..');
 const isolated = readFileSync(resolve(repo, 'src/premium/license/isolated.js'), 'utf8');
 const gate     = readFileSync(resolve(repo, 'src/premium/license/gate.js'), 'utf8');
 const filter   = readFileSync(resolve(repo, 'src/premium/rate-filter/filter.js'), 'utf8');
-const worker   = readFileSync(resolve(repo, 'worker/license-proxy.js'), 'utf8');
+// The license Worker moved to its own repo (Icy-Cat/license-worker) in 295f26a;
+// its server-side checks (product whitelist, signed entitlements, x-api-key)
+// are tested there.
 const background = readFileSync(resolve(repo, 'background.js'), 'utf8');
 const manifest = JSON.parse(readFileSync(resolve(repo, 'manifest.json'), 'utf8'));
 
@@ -186,31 +188,6 @@ describe('#45 step 2 — ADR-0004 storage / secret / productId checklist', () =>
     expect(entitlement).not.toMatch(/PRIVATE|HMAC_SECRET|SIGNING_PRIVATE/);
     expect(isolated).toMatch(/verifyEntitlementEnvelope/);
     expect(popup).toMatch(/verifyEntitlementEnvelope/);
-  });
-
-  it('Worker uses productId whitelist (CREEM_PRODUCT_IDS) — A decision', () => {
-    expect(/CREEM_PRODUCT_IDS/.test(worker),
-      'worker must support CREEM_PRODUCT_IDS whitelist (decision A)'
-    ).toBe(true);
-    expect(/getAllowedProductIds/.test(worker),
-      'worker must have getAllowedProductIds() helper'
-    ).toBe(true);
-  });
-
-  it('Worker signs short-lived entitlement envelopes with server-side private key', () => {
-    expect(worker).toMatch(/ENTITLEMENT_SIGNING_PRIVATE_JWK/);
-    expect(worker).toMatch(/entitlement_payload/);
-    expect(worker).toMatch(/entitlement_sig/);
-    expect(worker).toMatch(/ENTITLEMENT_TTL_SECONDS/);
-  });
-
-  it('Worker still injects x-api-key server-side', () => {
-    expect(/x-api-key/.test(worker),
-      'worker must forward x-api-key to Creem (server-side only)'
-    ).toBe(true);
-    expect(/env\.CREEM_API_KEY/.test(worker),
-      'worker must pull API key from env, not from request'
-    ).toBe(true);
   });
 
   it('XVM_PRODUCT_IDS lives in tier-logic.js (single source) — both XVM products present', () => {
