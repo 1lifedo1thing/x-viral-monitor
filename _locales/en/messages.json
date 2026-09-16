@@ -43,6 +43,9 @@
   "btnDelete": {
     "message": "Delete"
   },
+  "btnResetTemplates": { "message": "Restore default templates" },
+  "grokTplSaved": { "message": "Saved" },
+  "grokTplNamePlaceholder": { "message": "Template name" },
   "flashSaved": {
     "message": "Saved ✓"
   },
@@ -379,7 +382,7 @@
     "message": "Grok comment prompt"
   },
   "popupGrokPromptHint": {
-    "message": "Use [推文内容] where the source tweet should be inserted. Click AI Generate in a reply box, choose a template, then pick one generated option to fill the reply."
+    "message": "Write only the instructions — [推文内容] and the \"one code block per reply\" rule are added automatically if missing. Put [推文内容] yourself to control where the source tweet goes. Click AI Generate in a reply box, choose a template, then pick one generated option."
   },
   "popupGrokTempChatLabel": {
     "message": "Use temporary chat (don't pollute Grok history)"
@@ -487,8 +490,7 @@
   "advBadgeThresholdsTitle": { "message": "Badge thresholds & style" },
   "advLeaderboardTitle":     { "message": "Leaderboard details" },
   "advOtherFeaturesTitle":   { "message": "Other features" },
-  "advGrokShortTitle":       { "message": "Grok reply — short tweet template" },
-  "advGrokArticleTitle":     { "message": "Grok reply — article template" },
+  "advGrokShortTitle":       { "message": "AI reply — prompt templates" },
   "aiProviderTitle": { "message": "AI comment provider" },
   "aiProviderLabel": { "message": "Provider" },
   "aiPlatformLabel": { "message": "Platform" },
@@ -541,9 +543,7 @@
   "aboutShowUpdateNotes": { "message": "Show update notes" },
   "aboutShowUpdateNotesSent": { "message": "Opened the update popup on the current X page." },
   "aboutShowUpdateNotesNoTab": { "message": "Open an X page first, then try the update popup again." },
-  "grokShortTemplateLabel": { "message": "Tweet template (short posts, <600 chars)" },
-  "grokArticleTemplateLabel": { "message": "Article template (used for X Articles / long posts, ≥600 chars)" },
-  "grokArticleTemplateHint": { "message": "This template group is used automatically when replying to X long-form posts or Articles." },
+  "grokShortTemplateLabel": { "message": "Prompt template" },
   "popupGrokEnterReplyLabel": { "message": "Press Enter to reply" },
   "popupGrokEnterReplyHint": { "message": "When enabled, plain Enter sends the reply. Shift/Command/Ctrl/Alt+Enter keep their original behavior." },
   "flashGrokEnterReplyOn": { "message": "Enter to reply enabled" },
@@ -551,8 +551,6 @@
   "flashAiProviderSaved": { "message": "AI provider settings saved" },
   "grokDefaultTemplateName": { "message": "Natural replies" },
   "grokCustomTemplateName": { "message": "Template $N$", "placeholders": { "N": { "content": "$1" } } },
-  "grokArticleFallbackName": { "message": "Article template" },
-  "grokArticleCustomTemplateName": { "message": "Article template $N$", "placeholders": { "N": { "content": "$1" } } },
   "contentLbHotOnly":      { "message": "Hot only" },
   "contentLbHotProTitle":  { "message": "Velocity filter is a Pro feature" },
   "contentLbHotProSub":    { "message": "Hide low-views tweets, keep what's actually spreading" },

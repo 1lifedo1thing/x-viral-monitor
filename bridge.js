@@ -75,10 +75,8 @@ const GROK_DEFAULTS_BY_LANGUAGE = {
       { id: 'short-cn', name: '中文短评', prompt: '[推文内容]\n\n为该推文生成10条自然、简短、像真人回复的中文评论, 每条评论只包含可直接发布的评论正文，用代码块包裹。' },
       { id: 'sharp', name: '犀利观点', prompt: '[推文内容]\n\n为该推文生成10条有观点、有信息密度、但不人身攻击的评论, 每条评论只包含可直接发布的评论正文，用代码块包裹。' },
       { id: 'tieba-laoge', name: '贴吧老哥', prompt: '[推文内容]\n\n用贴吧老哥的语气为该推文生成10条评论。整体阴阳怪气，但不带脏字、不人身攻击；保持口语感，不要装文艺、不要写得像新闻评论；每条评论控制在 30 字以内，简短精悍。\n每条评论只包含可直接发布的评论正文，用代码块包裹。' },
-    ],
-    articlePromptTemplates: [
-      { id: 'article-default', name: '文章评论', prompt: '以下是一篇 X 长文 / Article：\n\n[推文内容]\n\n为这篇长文生成10条评论。要求：每条评论引用文章中具体的观点或论据进行回应（赞同/质疑/补充），避免笼统的"很有启发"这类空话；语气自然像真人；每条评论只包含可直接发布的评论正文，用代码块包裹。' },
-      { id: 'article-deep', name: '深度回应', prompt: '以下是一篇长文：\n\n[推文内容]\n\n挑选这篇长文中最值得讨论的3-5个核心论点，针对每个论点给出1-2条有信息密度的评论（提出延伸思考、反例、或个人经验），每条评论只包含可直接发布的评论正文，用代码块包裹。' },
+      { id: 'point-by-point', name: '针对性回应', prompt: '[推文内容]\n\n为该推文生成10条评论。要求：每条都针对推文里的一个具体观点、论据或例子回应（赞同/质疑/补充），不要笼统夸奖；语气自然像真人；每条评论只包含可直接发布的评论正文，用代码块包裹。' },
+      { id: 'deep-dive', name: '深度回应', prompt: '[推文内容]\n\n挑出这条推文里最值得讨论的3-5个点，围绕这些点生成10条有信息密度的评论（延伸思考、反例、或个人经验），每条评论只包含可直接发布的评论正文，用代码块包裹。' },
     ],
   },
   en: {
@@ -86,10 +84,8 @@ const GROK_DEFAULTS_BY_LANGUAGE = {
       { id: 'default', name: 'Natural replies', prompt: '[推文内容]\n\nWrite 10 natural English replies to this X post. Requirements:\n- Sound like real X replies, not marketing copy or a formal article comment\n- Each reply should make one clear point: agree, add context, ask a sharp question, or offer a mild counterpoint\n- Avoid generic praise, outrage bait, personal attacks, and hashtags\n- Keep each reply concise, roughly 8-28 words\n- Output only ready-to-post reply text, each inside its own code block.' },
       { id: 'sharp', name: 'Sharp but fair', prompt: '[推文内容]\n\nWrite 10 English replies to this X post with a sharper point of view. Requirements:\n- Be specific, thoughtful, and concise\n- You may challenge assumptions, add a counterexample, or clarify the tradeoff\n- Stay fair; no insults, no dunking, no culture-war bait\n- Keep each reply around 12-35 words\n- Output only ready-to-post reply text, each inside its own code block.' },
       { id: 'casual-en', name: 'Casual short replies', prompt: '[推文内容]\n\nWrite 10 casual English replies for this X post. Requirements:\n- Conversational and human, like a normal user replying on X\n- Short, direct, and not over-polished\n- Avoid cringe slang, hashtags, and corporate tone\n- Keep each reply under 25 words\n- Output only ready-to-post reply text, each inside its own code block.' },
-    ],
-    articlePromptTemplates: [
-      { id: 'article-default', name: 'Article replies', prompt: 'Here is an X long-form post / Article:\n\n[推文内容]\n\nWrite 10 English replies. Requirements:\n- Each reply should respond to a specific claim, argument, example, or conclusion from the article\n- Mix agreement, critique, added context, and follow-up questions\n- Avoid vague praise like “great insights”\n- Keep each reply specific and ready to post\n- Output only the reply text, each inside its own code block.' },
-      { id: 'article-deep', name: 'Deeper discussion', prompt: 'Here is an X long-form post / Article:\n\n[推文内容]\n\nIdentify 3-5 discussion-worthy points from the article and write 10 English replies. Requirements:\n- Each reply should focus on one concrete point\n- Add a useful extension, counterexample, practical constraint, or personal-experience angle\n- Sound natural, not like an essay summary\n- Output only ready-to-post reply text, each inside its own code block.' },
+      { id: 'point-by-point', name: 'Point-by-point', prompt: '[推文内容]\n\nWrite 10 English replies to this X post. Requirements:\n- Each reply responds to one specific claim, argument, example, or conclusion from the post\n- Mix agreement, critique, added context, and follow-up questions\n- Avoid vague praise like \u201cgreat insights\u201d\n- Keep each reply specific and ready to post\n- Output only the reply text, each inside its own code block.' },
+      { id: 'deep-dive', name: 'Deeper discussion', prompt: '[推文内容]\n\nIdentify 3-5 discussion-worthy points in this X post and write 10 English replies. Requirements:\n- Each reply focuses on one concrete point\n- Add a useful extension, counterexample, practical constraint, or personal-experience angle\n- Sound natural, not like a summary\n- Output only ready-to-post reply text, each inside its own code block.' },
     ],
   },
   ja: {
@@ -97,10 +93,8 @@ const GROK_DEFAULTS_BY_LANGUAGE = {
       { id: 'default', name: '自然な返信', prompt: '[推文内容]\n\nこの X 投稿に対する自然な日本語返信を 10 件作成してください。条件：\n- 実際の X の返信らしく、宣伝文や記事コメントのようにしない\n- 各返信は、共感・補足・軽い疑問・別視点のいずれかを 1 つだけ扱う\n- 空っぽな称賛、過度な煽り、個人攻撃は避ける\n- 1 件あたり 15〜45 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
       { id: 'sharp', name: '鋭めだが丁寧', prompt: '[推文内容]\n\nこの X 投稿に対する日本語返信を 10 件作成してください。少し鋭い視点で、ただし丁寧に。条件：\n- 前提への疑問、反例、補足、論点整理のいずれかを入れる\n- 皮肉、人格攻撃、決めつけは避ける\n- 1 件あたり 20〜55 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
       { id: 'casual-ja', name: '短めの口語返信', prompt: '[推文内容]\n\nこの X 投稿に対する短い日本語返信を 10 件作成してください。条件：\n- 口語的で自然、AI っぽくしない\n- くだけすぎず、普通のユーザーの返信に見える文体\n- 1 件あたり 10〜30 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
-    ],
-    articlePromptTemplates: [
-      { id: 'article-default', name: '長文への返信', prompt: '以下は X の長文投稿 / Article です：\n\n[推文内容]\n\n日本語の返信を 10 件作成してください。条件：\n- 各返信は本文中の具体的な主張、根拠、例、結論のどれかに反応する\n- 賛同、疑問、補足、追加の問いをバランスよく混ぜる\n- 「勉強になりました」のような抽象的な感想だけにしない\n- 1 件あたり 30〜80 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
-      { id: 'article-deep', name: '深めの議論', prompt: '以下は X の長文投稿 / Article です：\n\n[推文内容]\n\n本文から議論すべきポイントを 3〜5 個選び、日本語の返信を 10 件作成してください。条件：\n- 各返信は 1 つの具体的な論点に絞る\n- 追加視点、反例、現実的な制約、個人的な経験の角度を入れる\n- 論文要約のようにせず、自然な返信文にする\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
+      { id: 'point-by-point', name: '論点への返信', prompt: '[推文内容]\n\nこの X 投稿への日本語の返信を 10 件作成してください。条件：\n- 各返信は投稿中の具体的な主張、根拠、例、結論のどれかに反応する\n- 賛同、疑問、補足、追加の問いをバランスよく混ぜる\n- 「勉強になりました」のような抽象的な感想だけにしない\n- 1 件あたり 30〜80 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
+      { id: 'deep-dive', name: '深めの議論', prompt: '[推文内容]\n\nこの X 投稿から議論すべきポイントを 3〜5 個選び、日本語の返信を 10 件作成してください。条件：\n- 各返信は 1 つの具体的な論点に絞る\n- 追加視点、反例、現実的な制約、個人的な経験の角度を入れる\n- 要約のようにせず、自然な返信文にする\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
     ],
   },
 };
@@ -111,9 +105,7 @@ function getLocalizedGrokDefaults(languageId = getBrowserLocaleId()) {
   return {
     grokCommentPrompt: defs.promptTemplates[0].prompt,
     grokPromptTemplates: defs.promptTemplates.map((tpl) => ({ ...tpl })),
-    grokArticlePromptTemplates: defs.articlePromptTemplates.map((tpl) => ({ ...tpl })),
     grokSelectedPromptId: defs.promptTemplates[0].id,
-    grokSelectedArticlePromptId: defs.articlePromptTemplates[0].id,
   };
 }
 
@@ -247,9 +239,7 @@ const DEFAULT_FEATURES = {
   leaderboardColumns: DEFAULT_COLUMNS,
   grokCommentPrompt: LOCALIZED_GROK_DEFAULTS.grokCommentPrompt,
   grokPromptTemplates: LOCALIZED_GROK_DEFAULTS.grokPromptTemplates,
-  grokArticlePromptTemplates: LOCALIZED_GROK_DEFAULTS.grokArticlePromptTemplates,
   grokSelectedPromptId: LOCALIZED_GROK_DEFAULTS.grokSelectedPromptId,
-  grokSelectedArticlePromptId: LOCALIZED_GROK_DEFAULTS.grokSelectedArticlePromptId,
   grokTemporaryChat: true,
   grokEnterToReply: false,
   aiProvider: 'x-grok',
@@ -730,6 +720,59 @@ function currentBookmarkTimelineAccountId() {
   return globalThis.__xvmBookmarkTimelineStorage?.accountIdFromCookie?.(document.cookie) || '';
 }
 
+// --- article-template-migration:start ---
+// Until 1.18.12 long posts had their own template list (grokArticlePromptTemplates).
+// 1.18.13 folds it into the one list. Templates the user wrote or edited are
+// carried over; the six that shipped unmodified are dropped, since the new
+// defaults cover them. Pure, so the test can run it without chrome.*.
+const LEGACY_BUNDLED_ARTICLE_PROMPTS = new Set([
+  '以下是一篇 X 长文 / Article：\n\n[推文内容]\n\n为这篇长文生成10条评论。要求：每条评论引用文章中具体的观点或论据进行回应（赞同/质疑/补充），避免笼统的"很有启发"这类空话；语气自然像真人；每条评论只包含可直接发布的评论正文，用代码块包裹。',
+  '以下是一篇长文：\n\n[推文内容]\n\n挑选这篇长文中最值得讨论的3-5个核心论点，针对每个论点给出1-2条有信息密度的评论（提出延伸思考、反例、或个人经验），每条评论只包含可直接发布的评论正文，用代码块包裹。',
+  'Here is an X long-form post / Article:\n\n[推文内容]\n\nWrite 10 English replies. Requirements:\n- Each reply should respond to a specific claim, argument, example, or conclusion from the article\n- Mix agreement, critique, added context, and follow-up questions\n- Avoid vague praise like “great insights”\n- Keep each reply specific and ready to post\n- Output only the reply text, each inside its own code block.',
+  'Here is an X long-form post / Article:\n\n[推文内容]\n\nIdentify 3-5 discussion-worthy points from the article and write 10 English replies. Requirements:\n- Each reply should focus on one concrete point\n- Add a useful extension, counterexample, practical constraint, or personal-experience angle\n- Sound natural, not like an essay summary\n- Output only ready-to-post reply text, each inside its own code block.',
+  '以下は X の長文投稿 / Article です：\n\n[推文内容]\n\n日本語の返信を 10 件作成してください。条件：\n- 各返信は本文中の具体的な主張、根拠、例、結論のどれかに反応する\n- 賛同、疑問、補足、追加の問いをバランスよく混ぜる\n- 「勉強になりました」のような抽象的な感想だけにしない\n- 1 件あたり 30〜80 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。',
+  '以下は X の長文投稿 / Article です：\n\n[推文内容]\n\n本文から議論すべきポイントを 3〜5 個選び、日本語の返信を 10 件作成してください。条件：\n- 各返信は 1 つの具体的な論点に絞る\n- 追加視点、反例、現実的な制約、個人的な経験の角度を入れる\n- 論文要約のようにせず、自然な返信文にする\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。',
+]);
+
+function mergeLegacyArticleTemplates(promptTemplates, articleTemplates, defaultTemplates) {
+  const legacy = Array.isArray(articleTemplates) ? articleTemplates : [];
+  const custom = legacy.filter((tpl) => {
+    const prompt = String(tpl?.prompt || '').trim();
+    return prompt && !LEGACY_BUNDLED_ARTICLE_PROMPTS.has(prompt);
+  });
+  if (!custom.length) return null;
+  const base = Array.isArray(promptTemplates) && promptTemplates.length
+    ? promptTemplates.map((tpl) => ({ ...tpl }))
+    : defaultTemplates.map((tpl) => ({ ...tpl }));
+  const ids = new Set(base.map((tpl) => String(tpl.id)));
+  const prompts = new Set(base.map((tpl) => String(tpl.prompt || '').trim()));
+  for (const tpl of custom) {
+    const prompt = String(tpl.prompt).trim();
+    if (prompts.has(prompt)) continue;
+    let id = String(tpl.id || 'article');
+    while (ids.has(id)) id = `${id}-legacy`;
+    ids.add(id);
+    prompts.add(prompt);
+    base.push({ id, name: String(tpl.name || id), prompt });
+  }
+  return base;
+}
+// --- article-template-migration:end ---
+
+function migrateLegacyArticleTemplates(callback) {
+  chrome.storage.sync.get(['grokArticlePromptTemplates', 'grokPromptTemplates'], (items) => {
+    if (!('grokArticlePromptTemplates' in items)) { callback?.(); return; }
+    const merged = mergeLegacyArticleTemplates(
+      items.grokPromptTemplates,
+      items.grokArticlePromptTemplates,
+      DEFAULT_FEATURES.grokPromptTemplates,
+    );
+    const drop = () => chrome.storage.sync.remove(['grokArticlePromptTemplates', 'grokSelectedArticlePromptId'], () => callback?.());
+    if (merged) chrome.storage.sync.set({ grokPromptTemplates: merged }, drop);
+    else drop();
+  });
+}
+
 function removeLegacySyncedBookmarkTimelineSettings(callback) {
   chrome.storage.local.get({ [BOOKMARK_TIMELINE_SYNC_MIGRATED_KEY]: false }, (items) => {
     if (items[BOOKMARK_TIMELINE_SYNC_MIGRATED_KEY]) { callback?.(); return; }
@@ -966,8 +1009,10 @@ safeChromeCall(() => {
 
 safeChromeCall(() => {
   removeLegacySyncedBookmarkTimelineSettings(() => {
-    chrome.storage.sync.get(STORAGE_DEFAULTS, (items) => {
-      pushSettings(items);
+    migrateLegacyArticleTemplates(() => {
+      chrome.storage.sync.get(STORAGE_DEFAULTS, (items) => {
+        pushSettings(items);
+      });
     });
   });
 });
@@ -1325,9 +1370,7 @@ window.addEventListener('message', (event) => {
       chrome.storage.sync.get({
         grokCommentPrompt: DEFAULT_FEATURES.grokCommentPrompt,
         grokPromptTemplates: DEFAULT_FEATURES.grokPromptTemplates,
-        grokArticlePromptTemplates: DEFAULT_FEATURES.grokArticlePromptTemplates,
         grokSelectedPromptId: DEFAULT_FEATURES.grokSelectedPromptId,
-        grokSelectedArticlePromptId: DEFAULT_FEATURES.grokSelectedArticlePromptId,
         grokTemporaryChat: DEFAULT_FEATURES.grokTemporaryChat,
         grokEnterToReply: DEFAULT_FEATURES.grokEnterToReply,
         aiProvider: DEFAULT_FEATURES.aiProvider,
@@ -1339,14 +1382,11 @@ window.addEventListener('message', (event) => {
       }, (syncItems) => {
         chrome.storage.local.get({ xvmGrokCapturedTxId: null }, (localItems) => {
           const promptTemplates = normalizeGrokPromptTemplates(syncItems.grokPromptTemplates, syncItems.grokCommentPrompt);
-          const articlePromptTemplates = normalizeGrokPromptTemplates(syncItems.grokArticlePromptTemplates) ;
           window.postMessage({
             type: 'XVM_GROK_SETTINGS_LOAD',
             promptTemplate: promptTemplates[0]?.prompt || DEFAULT_FEATURES.grokCommentPrompt,
             promptTemplates,
-            articlePromptTemplates: articlePromptTemplates.length ? articlePromptTemplates : DEFAULT_FEATURES.grokArticlePromptTemplates,
             selectedPromptId: syncItems.grokSelectedPromptId || promptTemplates[0]?.id || 'default',
-            selectedArticlePromptId: syncItems.grokSelectedArticlePromptId || (articlePromptTemplates[0]?.id) || DEFAULT_FEATURES.grokSelectedArticlePromptId,
             temporaryChat: syncItems.grokTemporaryChat !== false,
             enterToReply: syncItems.grokEnterToReply === true,
             aiProvider: syncItems.aiProvider || DEFAULT_FEATURES.aiProvider,
@@ -1445,7 +1485,7 @@ safeChromeCall(() => {
       window.postMessage({ type: 'XVM_THEME_UPDATE', pref }, '*');
     }
     const aiTouched = changes.aiProvider || changes.aiOpenAIPlatform || changes.aiBaseUrl || changes.aiModel || changes.aiReplyCount || changes.aiLanguage;
-    const grokTouched = changes.grokCommentPrompt || changes.grokPromptTemplates || changes.grokArticlePromptTemplates || changes.grokSelectedPromptId || changes.grokSelectedArticlePromptId || changes.grokTemporaryChat || changes.grokEnterToReply || changes.language || aiTouched;
+    const grokTouched = changes.grokCommentPrompt || changes.grokPromptTemplates || changes.grokSelectedPromptId || changes.grokTemporaryChat || changes.grokEnterToReply || changes.language || aiTouched;
     const bookmarkTimelineInjectTouched = changes.featureBookmarkTimelineInject || changes.bookmarkTimelineInjectFolderIds || changes.bookmarkTimelineInjectEvery;
     if (!changes.trending && !changes.viral && !changes.featureVelocityLeaderboard && !changes.featureCopyAsMarkdown && !changes.featureStarChart && !changes.featureBookmarkFolders && !bookmarkTimelineInjectTouched && !changes.showBookmarkCount && !changes.leaderboardEdgeHideEnabled && !changes.badgeStyle && !changes.leaderboardCount && !changes.leaderboardColumns && !changes.language && !grokTouched) return;
 
@@ -1465,9 +1505,7 @@ safeChromeCall(() => {
         chrome.storage.sync.get({
           grokCommentPrompt: DEFAULT_FEATURES.grokCommentPrompt,
           grokPromptTemplates: DEFAULT_FEATURES.grokPromptTemplates,
-          grokArticlePromptTemplates: DEFAULT_FEATURES.grokArticlePromptTemplates,
           grokSelectedPromptId: DEFAULT_FEATURES.grokSelectedPromptId,
-          grokSelectedArticlePromptId: DEFAULT_FEATURES.grokSelectedArticlePromptId,
           grokTemporaryChat: DEFAULT_FEATURES.grokTemporaryChat,
           grokEnterToReply: DEFAULT_FEATURES.grokEnterToReply,
           aiProvider: DEFAULT_FEATURES.aiProvider,
@@ -1478,14 +1516,11 @@ safeChromeCall(() => {
         aiLanguage: DEFAULT_FEATURES.aiLanguage,
       }, (items) => {
           const promptTemplates = normalizeGrokPromptTemplates(items.grokPromptTemplates, items.grokCommentPrompt);
-          const articlePromptTemplates = normalizeGrokPromptTemplates(items.grokArticlePromptTemplates);
           window.postMessage({
             type: 'XVM_GROK_SETTINGS_LOAD',
             promptTemplate: promptTemplates[0]?.prompt || DEFAULT_FEATURES.grokCommentPrompt,
             promptTemplates,
-            articlePromptTemplates: articlePromptTemplates.length ? articlePromptTemplates : DEFAULT_FEATURES.grokArticlePromptTemplates,
             selectedPromptId: items.grokSelectedPromptId || promptTemplates[0]?.id || 'default',
-            selectedArticlePromptId: items.grokSelectedArticlePromptId || articlePromptTemplates[0]?.id || DEFAULT_FEATURES.grokSelectedArticlePromptId,
             temporaryChat: items.grokTemporaryChat !== false,
             enterToReply: items.grokEnterToReply === true,
             aiProvider: items.aiProvider || DEFAULT_FEATURES.aiProvider,

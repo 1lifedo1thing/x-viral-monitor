@@ -626,7 +626,33 @@
     .ft-lb-reset-btn { padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-hi); background: var(--surface-2); color: var(--text-2); font-size: 11.5px; cursor: pointer; }
     .ft-lb-reset-btn:hover { border-color: var(--accent); color: var(--accent); }
     .ft-lb-reset-msg { font-size: 11px; color: var(--ok); }
-    .grok-template .grok-template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+    .tpl-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .tpl-status { font-size: 10.5px; color: var(--ok); opacity: 0; transition: opacity 150ms; }
+    .tpl-status[data-on="1"] { opacity: 1; }
+    .tpl-chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 7px; }
+    .tpl-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 8px; border: 1px solid var(--border-hi); border-radius: 999px;
+      background: var(--bg); color: var(--text-2); font: inherit; font-size: 11.5px;
+      cursor: pointer; max-width: 100%;
+    }
+    .tpl-chip:hover { border-color: var(--accent); color: var(--text); }
+    .tpl-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .tpl-chip[aria-selected="true"] {
+      border-color: var(--accent); color: var(--text); font-weight: 600;
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    }
+    .tpl-chip-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
+    .tpl-chip-del {
+      border: 0; background: none; padding: 0; margin-right: -2px; line-height: 1;
+      color: var(--muted); font-size: 13px; cursor: pointer; opacity: 0;
+    }
+    .tpl-chip:hover .tpl-chip-del, .tpl-chip[aria-selected="true"] .tpl-chip-del { opacity: 1; }
+    .tpl-chip-del:hover { color: var(--danger); }
+    .tpl-chip-add { border-style: dashed; color: var(--muted); padding: 4px 9px; }
+    .tpl-name {
+      width: 100%; margin-bottom: 6px; font-weight: 600;
+    }
     [hidden] { display: none !important; }
     .ai-provider-choice { display: grid; grid-template-columns: 1fr; gap: 6px; margin: 8px 0 10px; }
     .ai-provider-option {
@@ -889,49 +915,17 @@
       </div>
 
       <div class="panel-card grok-template">
-        <h3 data-i18n="advGrokShortTitle">Grok reply — short tweet template</h3>
-        <div class="grok-template-grid">
-          <div class="xvm-select" data-select-name="grok-template-select">
-            <input id="grok-template-select" type="hidden" aria-label="Grok prompt template">
-            <button type="button" class="xvm-select-trigger" aria-haspopup="listbox" aria-expanded="false">
-              <span class="xvm-select-value"></span>
-              <svg class="xvm-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="xvm-select-menu" role="listbox"></div>
-          </div>
-          <input id="grok-template-name" type="text" aria-label="Grok prompt template name">
+        <div class="tpl-head">
+          <h3 data-i18n="advGrokShortTitle">AI reply — prompt templates</h3>
+          <span id="grok-tpl-status" class="tpl-status" aria-live="polite" data-i18n="grokTplSaved">Saved</span>
         </div>
-        <label class="field" for="grok-prompt"><span data-i18n="grokShortTemplateLabel">Tweet template (short posts, &lt;600 chars)</span><textarea id="grok-prompt" spellcheck="false"></textarea></label>
-        <div class="ft-desc" data-i18n="popupGrokPromptHint">Use [推文内容] where the source tweet should be inserted.</div>
+        <div id="grok-template-select" class="tpl-chips" role="tablist" aria-label="Prompt templates"></div>
+        <input id="grok-template-name" class="tpl-name" type="text" data-i18n-placeholder="grokTplNamePlaceholder" placeholder="Template name" aria-label="Prompt template name">
+        <label class="field" for="grok-prompt"><textarea id="grok-prompt" spellcheck="false"></textarea></label>
+        <div class="ft-desc" data-i18n="popupGrokPromptHint">Write only the instructions — [推文内容] and the code-block rule are added automatically if missing.</div>
         <label class="inline-toggle" for="grok-temp-chat"><span data-i18n="popupGrokTempChatLabel">Use temporary chat (don't pollute Grok history)</span><span class="switch"><input id="grok-temp-chat" type="checkbox"><span class="slider"></span></span></label>
         <div class="actions compact">
-          <button type="button" id="grok-prompt-add" class="adv-btn" data-i18n="btnAdd">Add</button>
-          <button type="button" id="grok-prompt-save" class="adv-btn" data-i18n="btnSave">Save</button>
-          <button type="button" id="grok-prompt-delete" class="adv-btn" data-i18n="btnDelete">Delete</button>
-          <button type="button" id="grok-prompt-reset" class="adv-btn" data-i18n="btnReset">Reset</button>
-        </div>
-      </div>
-
-      <div class="panel-card grok-template">
-        <h3 data-i18n="advGrokArticleTitle">Grok reply — article template</h3>
-        <div class="grok-template-grid">
-          <div class="xvm-select" data-select-name="grok-article-template-select">
-            <input id="grok-article-template-select" type="hidden" aria-label="Grok article prompt template">
-            <button type="button" class="xvm-select-trigger" aria-haspopup="listbox" aria-expanded="false">
-              <span class="xvm-select-value"></span>
-              <svg class="xvm-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="xvm-select-menu" role="listbox"></div>
-          </div>
-          <input id="grok-article-template-name" type="text" aria-label="Grok article template name">
-        </div>
-        <label class="field" for="grok-article-prompt"><span data-i18n="grokArticleTemplateLabel">Article template (used for X Articles / long posts, ≥600 chars)</span><textarea id="grok-article-prompt" spellcheck="false"></textarea></label>
-        <div class="ft-desc" data-i18n="grokArticleTemplateHint">This template group is used automatically when replying to X long-form posts or Articles.</div>
-        <div class="actions compact">
-          <button type="button" id="grok-article-prompt-add" class="adv-btn" data-i18n="btnAdd">Add</button>
-          <button type="button" id="grok-article-prompt-save" class="adv-btn" data-i18n="btnSave">Save</button>
-          <button type="button" id="grok-article-prompt-delete" class="adv-btn" data-i18n="btnDelete">Delete</button>
-          <button type="button" id="grok-article-prompt-reset" class="adv-btn" data-i18n="btnReset">Reset</button>
+          <button type="button" id="grok-prompt-reset" class="adv-btn" data-i18n="btnResetTemplates">Restore default templates</button>
         </div>
       </div>
     </section>

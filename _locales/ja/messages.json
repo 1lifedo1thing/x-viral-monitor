@@ -41,6 +41,9 @@
   "btnDelete": {
     "message": "削除"
   },
+  "btnResetTemplates": { "message": "デフォルトに戻す" },
+  "grokTplSaved": { "message": "保存しました" },
+  "grokTplNamePlaceholder": { "message": "テンプレート名" },
   "flashSaved": {
     "message": "保存しました ✓"
   },
@@ -377,7 +380,7 @@
     "message": "Grok コメントプロンプト"
   },
   "popupGrokPromptHint": {
-    "message": "[推文内容] を元ツイートの挿入位置として使います。返信欄の AI 生成をクリックしてテンプレートを選び、生成後に Options から1件を選んで入力します。"
+    "message": "指示だけ書けば十分です。[推文内容] と「各返信をコードブロックで囲む」指示は、無ければ自動で補われます。挿入位置を指定したいときだけ [推文内容] を書いてください。返信欄の AI 生成をクリックしてテンプレートを選び、生成後に Options から1件を選びます。"
   },
   "popupGrokTempChatLabel": {
     "message": "一時チャットを使う（Grok 履歴を汚さない）"
@@ -485,8 +488,7 @@
   "advBadgeThresholdsTitle": { "message": "バッジ閾値とスタイル" },
   "advLeaderboardTitle":     { "message": "ランキング詳細" },
   "advOtherFeaturesTitle":   { "message": "その他の機能" },
-  "advGrokShortTitle":       { "message": "Grok — 短い投稿テンプレート" },
-  "advGrokArticleTitle":     { "message": "Grok — 記事テンプレート" },
+  "advGrokShortTitle":       { "message": "AI 返信 — プロンプトテンプレート" },
   "aiProviderTitle": { "message": "AI コメントプロバイダー" },
   "aiProviderLabel": { "message": "プロバイダー" },
   "aiPlatformLabel": { "message": "プラットフォーム" },
@@ -539,9 +541,7 @@
   "aboutShowUpdateNotes": { "message": "更新内容を表示" },
   "aboutShowUpdateNotesSent": { "message": "現在の X ページで更新ポップアップを開きました。" },
   "aboutShowUpdateNotesNoTab": { "message": "先に X ページを開いてから、もう一度お試しください。" },
-  "grokShortTemplateLabel": { "message": "投稿テンプレート（短い投稿、600 字未満）" },
-  "grokArticleTemplateLabel": { "message": "記事テンプレート（X Article / 長文、600 字以上で使用）" },
-  "grokArticleTemplateHint": { "message": "X の長文投稿や Article に返信するとき、このテンプレート群を自動で使います。" },
+  "grokShortTemplateLabel": { "message": "プロンプトテンプレート" },
   "popupGrokEnterReplyLabel": { "message": "Enter で返信を送信" },
   "popupGrokEnterReplyHint": { "message": "有効にすると、Enter だけで返信を送信します。Shift/Command/Ctrl/Alt+Enter は従来どおり動作します。" },
   "flashGrokEnterReplyOn": { "message": "Enter 送信を有効にしました" },
@@ -549,8 +549,6 @@
   "flashAiProviderSaved": { "message": "AI プロバイダー設定を保存しました" },
   "grokDefaultTemplateName": { "message": "自然な返信" },
   "grokCustomTemplateName": { "message": "テンプレート $N$", "placeholders": { "N": { "content": "$1" } } },
-  "grokArticleFallbackName": { "message": "記事テンプレート" },
-  "grokArticleCustomTemplateName": { "message": "記事テンプレート $N$", "placeholders": { "N": { "content": "$1" } } },
   "contentLbHotOnly":      { "message": "ホットのみ" },
   "contentLbHotProTitle":  { "message": "流速フィルターは Pro 機能" },
   "contentLbHotProSub":    { "message": "低表示数の投稿を非表示にし、実際に拡散している投稿だけ残す" },

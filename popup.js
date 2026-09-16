@@ -80,10 +80,8 @@ const GROK_DEFAULTS_BY_LANGUAGE = {
       { id: 'short-cn', name: '中文短评', prompt: '[推文内容]\n\n为该推文生成10条自然、简短、像真人回复的中文评论,每条评论只包含可直接发布的评论正文，用代码块包裹。' },
       { id: 'sharp', name: '犀利观点', prompt: '[推文内容]\n\n为该推文生成10条有观点、有信息密度、但不人身攻击的评论,每条评论只包含可直接发布的评论正文，用代码块包裹。' },
       { id: 'tieba-laoge', name: '贴吧老哥', prompt: '[推文内容]\n\n用贴吧老哥的语气为该推文生成10条评论。整体阴阳怪气，但不带脏字、不人身攻击；保持口语感，不要装文艺、不要写得像新闻评论；每条评论控制在 30 字以内，简短精悍。\n每条评论只包含可直接发布的评论正文，用代码块包裹。' },
-    ],
-    articlePromptTemplates: [
-      { id: 'article-default', name: '文章评论', prompt: '以下是一篇 X 长文 / Article：\n\n[推文内容]\n\n为这篇长文生成10条评论。要求：每条评论引用文章中具体的观点或论据进行回应（赞同/质疑/补充），避免笼统的"很有启发"这类空话；语气自然像真人；每条评论只包含可直接发布的评论正文，用代码块包裹。' },
-      { id: 'article-deep', name: '深度回应', prompt: '以下是一篇长文：\n\n[推文内容]\n\n挑选这篇长文中最值得讨论的3-5个核心论点，针对每个论点给出1-2条有信息密度的评论（提出延伸思考、反例、或个人经验），每条评论只包含可直接发布的评论正文，用代码块包裹。' },
+      { id: 'point-by-point', name: '针对性回应', prompt: '[推文内容]\n\n为该推文生成10条评论。要求：每条都针对推文里的一个具体观点、论据或例子回应（赞同/质疑/补充），不要笼统夸奖；语气自然像真人；每条评论只包含可直接发布的评论正文，用代码块包裹。' },
+      { id: 'deep-dive', name: '深度回应', prompt: '[推文内容]\n\n挑出这条推文里最值得讨论的3-5个点，围绕这些点生成10条有信息密度的评论（延伸思考、反例、或个人经验），每条评论只包含可直接发布的评论正文，用代码块包裹。' },
     ],
   },
   en: {
@@ -91,10 +89,8 @@ const GROK_DEFAULTS_BY_LANGUAGE = {
       { id: 'default', name: 'Natural replies', prompt: '[推文内容]\n\nWrite 10 natural English replies to this X post. Requirements:\n- Sound like real X replies, not marketing copy or a formal article comment\n- Each reply should make one clear point: agree, add context, ask a sharp question, or offer a mild counterpoint\n- Avoid generic praise, outrage bait, personal attacks, and hashtags\n- Keep each reply concise, roughly 8-28 words\n- Output only ready-to-post reply text, each inside its own code block.' },
       { id: 'sharp', name: 'Sharp but fair', prompt: '[推文内容]\n\nWrite 10 English replies to this X post with a sharper point of view. Requirements:\n- Be specific, thoughtful, and concise\n- You may challenge assumptions, add a counterexample, or clarify the tradeoff\n- Stay fair; no insults, no dunking, no culture-war bait\n- Keep each reply around 12-35 words\n- Output only ready-to-post reply text, each inside its own code block.' },
       { id: 'casual-en', name: 'Casual short replies', prompt: '[推文内容]\n\nWrite 10 casual English replies for this X post. Requirements:\n- Conversational and human, like a normal user replying on X\n- Short, direct, and not over-polished\n- Avoid cringe slang, hashtags, and corporate tone\n- Keep each reply under 25 words\n- Output only ready-to-post reply text, each inside its own code block.' },
-    ],
-    articlePromptTemplates: [
-      { id: 'article-default', name: 'Article replies', prompt: 'Here is an X long-form post / Article:\n\n[推文内容]\n\nWrite 10 English replies. Requirements:\n- Each reply should respond to a specific claim, argument, example, or conclusion from the article\n- Mix agreement, critique, added context, and follow-up questions\n- Avoid vague praise like “great insights”\n- Keep each reply specific and ready to post\n- Output only the reply text, each inside its own code block.' },
-      { id: 'article-deep', name: 'Deeper discussion', prompt: 'Here is an X long-form post / Article:\n\n[推文内容]\n\nIdentify 3-5 discussion-worthy points from the article and write 10 English replies. Requirements:\n- Each reply should focus on one concrete point\n- Add a useful extension, counterexample, practical constraint, or personal-experience angle\n- Sound natural, not like an essay summary\n- Output only ready-to-post reply text, each inside its own code block.' },
+      { id: 'point-by-point', name: 'Point-by-point', prompt: '[推文内容]\n\nWrite 10 English replies to this X post. Requirements:\n- Each reply responds to one specific claim, argument, example, or conclusion from the post\n- Mix agreement, critique, added context, and follow-up questions\n- Avoid vague praise like \u201cgreat insights\u201d\n- Keep each reply specific and ready to post\n- Output only the reply text, each inside its own code block.' },
+      { id: 'deep-dive', name: 'Deeper discussion', prompt: '[推文内容]\n\nIdentify 3-5 discussion-worthy points in this X post and write 10 English replies. Requirements:\n- Each reply focuses on one concrete point\n- Add a useful extension, counterexample, practical constraint, or personal-experience angle\n- Sound natural, not like a summary\n- Output only ready-to-post reply text, each inside its own code block.' },
     ],
   },
   ja: {
@@ -102,10 +98,8 @@ const GROK_DEFAULTS_BY_LANGUAGE = {
       { id: 'default', name: '自然な返信', prompt: '[推文内容]\n\nこの X 投稿に対する自然な日本語返信を 10 件作成してください。条件：\n- 実際の X の返信らしく、宣伝文や記事コメントのようにしない\n- 各返信は、共感・補足・軽い疑問・別視点のいずれかを 1 つだけ扱う\n- 空っぽな称賛、過度な煽り、個人攻撃は避ける\n- 1 件あたり 15〜45 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
       { id: 'sharp', name: '鋭めだが丁寧', prompt: '[推文内容]\n\nこの X 投稿に対する日本語返信を 10 件作成してください。少し鋭い視点で、ただし丁寧に。条件：\n- 前提への疑問、反例、補足、論点整理のいずれかを入れる\n- 皮肉、人格攻撃、決めつけは避ける\n- 1 件あたり 20〜55 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
       { id: 'casual-ja', name: '短めの口語返信', prompt: '[推文内容]\n\nこの X 投稿に対する短い日本語返信を 10 件作成してください。条件：\n- 口語的で自然、AI っぽくしない\n- くだけすぎず、普通のユーザーの返信に見える文体\n- 1 件あたり 10〜30 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
-    ],
-    articlePromptTemplates: [
-      { id: 'article-default', name: '長文への返信', prompt: '以下は X の長文投稿 / Article です：\n\n[推文内容]\n\n日本語の返信を 10 件作成してください。条件：\n- 各返信は本文中の具体的な主張、根拠、例、結論のどれかに反応する\n- 賛同、疑問、補足、追加の問いをバランスよく混ぜる\n- 「勉強になりました」のような抽象的な感想だけにしない\n- 1 件あたり 30〜80 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
-      { id: 'article-deep', name: '深めの議論', prompt: '以下は X の長文投稿 / Article です：\n\n[推文内容]\n\n本文から議論すべきポイントを 3〜5 個選び、日本語の返信を 10 件作成してください。条件：\n- 各返信は 1 つの具体的な論点に絞る\n- 追加視点、反例、現実的な制約、個人的な経験の角度を入れる\n- 論文要約のようにせず、自然な返信文にする\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
+      { id: 'point-by-point', name: '論点への返信', prompt: '[推文内容]\n\nこの X 投稿への日本語の返信を 10 件作成してください。条件：\n- 各返信は投稿中の具体的な主張、根拠、例、結論のどれかに反応する\n- 賛同、疑問、補足、追加の問いをバランスよく混ぜる\n- 「勉強になりました」のような抽象的な感想だけにしない\n- 1 件あたり 30〜80 字程度\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
+      { id: 'deep-dive', name: '深めの議論', prompt: '[推文内容]\n\nこの X 投稿から議論すべきポイントを 3〜5 個選び、日本語の返信を 10 件作成してください。条件：\n- 各返信は 1 つの具体的な論点に絞る\n- 追加視点、反例、現実的な制約、個人的な経験の角度を入れる\n- 要約のようにせず、自然な返信文にする\n- そのまま投稿できる本文だけを、各返信ごとにコードブロックで出力する。' },
     ],
   },
 };
@@ -116,9 +110,7 @@ function getLocalizedGrokDefaults(languageId = initialLanguageId) {
   return {
     grokCommentPrompt: defs.promptTemplates[0].prompt,
     grokPromptTemplates: defs.promptTemplates.map((tpl) => ({ ...tpl })),
-    grokArticlePromptTemplates: defs.articlePromptTemplates.map((tpl) => ({ ...tpl })),
     grokSelectedPromptId: defs.promptTemplates[0].id,
-    grokSelectedArticlePromptId: defs.articlePromptTemplates[0].id,
   };
 }
 
@@ -168,9 +160,7 @@ const DEFAULT_FEATURES = {
   leaderboardColumns: DEFAULT_COLUMNS,
   grokCommentPrompt: LOCALIZED_GROK_DEFAULTS.grokCommentPrompt,
   grokPromptTemplates: LOCALIZED_GROK_DEFAULTS.grokPromptTemplates,
-  grokArticlePromptTemplates: LOCALIZED_GROK_DEFAULTS.grokArticlePromptTemplates,
   grokSelectedPromptId: LOCALIZED_GROK_DEFAULTS.grokSelectedPromptId,
-  grokSelectedArticlePromptId: LOCALIZED_GROK_DEFAULTS.grokSelectedArticlePromptId,
   grokTemporaryChat: true,
   grokEnterToReply: false,
   aiProvider: 'x-grok',
@@ -205,6 +195,10 @@ function t(key, substitutions) {
 document.querySelectorAll('[data-i18n]').forEach((el) => {
   const msg = t(el.dataset.i18n);
   if (msg) el.textContent = msg;
+});
+document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+  const msg = t(el.dataset.i18nPlaceholder);
+  if (msg) el.placeholder = msg;
 });
 
 function tr(key, substitutions) {
@@ -375,13 +369,11 @@ const badgeStyleSelect = document.getElementById('badge-style');
 const languageSelect = document.getElementById('language-select');
 const languageToggle = document.getElementById('language-toggle');
 const colListEl = document.getElementById('lb-col-list');
-const grokTemplateSelect = document.getElementById('grok-template-select');
+const grokTemplateChips = document.getElementById('grok-template-select');
 const grokTemplateNameInput = document.getElementById('grok-template-name');
 const grokPromptInput = document.getElementById('grok-prompt');
-const grokPromptSaveBtn = document.getElementById('grok-prompt-save');
 const grokPromptResetBtn = document.getElementById('grok-prompt-reset');
-const grokPromptAddBtn = document.getElementById('grok-prompt-add');
-const grokPromptDeleteBtn = document.getElementById('grok-prompt-delete');
+const grokTplStatus = document.getElementById('grok-tpl-status');
 const grokTempChatToggle = document.getElementById('grok-temp-chat');
 const grokEnterReplyToggle = document.getElementById('grok-enter-reply');
 const aiProviderSelect = document.getElementById('ai-provider');
@@ -397,14 +389,6 @@ const aiProviderHint = document.getElementById('ai-provider-hint');
 const aiProviderSaveBtn = document.getElementById('ai-provider-save');
 const aiTestConnectionBtn = document.getElementById('ai-test-connection');
 const aiTestStatus = document.getElementById('ai-test-status');
-// Parallel set for article-length sources.
-const grokArticleTemplateSelect = document.getElementById('grok-article-template-select');
-const grokArticleTemplateNameInput = document.getElementById('grok-article-template-name');
-const grokArticlePromptInput = document.getElementById('grok-article-prompt');
-const grokArticlePromptSaveBtn = document.getElementById('grok-article-prompt-save');
-const grokArticlePromptResetBtn = document.getElementById('grok-article-prompt-reset');
-const grokArticlePromptAddBtn = document.getElementById('grok-article-prompt-add');
-const grokArticlePromptDeleteBtn = document.getElementById('grok-article-prompt-delete');
 
 setCustomSelectOptions(badgeStyleSelect, [
   { value: 'pill-solid', label: tr('badgeStylePillSolid') || 'Pill solid' },
@@ -453,11 +437,6 @@ function buildLanguageStoragePatch(language) {
     next.grokPromptTemplates = defs.grokPromptTemplates;
     next.grokSelectedPromptId = defs.grokSelectedPromptId;
   }
-  if (isUnmodifiedBundledGrokTemplateSet(grokArticleTemplatesState, 'articlePromptTemplates')) {
-    const defs = getLocalizedGrokDefaults(effective);
-    next.grokArticlePromptTemplates = defs.grokArticlePromptTemplates;
-    next.grokSelectedArticlePromptId = defs.grokSelectedArticlePromptId;
-  }
   return next;
 }
 
@@ -475,8 +454,6 @@ updateLanguageToggle(initialLanguagePref);
 let columnsState = normalizeColumns(null);
 let grokTemplatesState = DEFAULT_FEATURES.grokPromptTemplates.map((tpl) => ({ ...tpl }));
 let grokSelectedTemplateId = DEFAULT_FEATURES.grokSelectedPromptId;
-let grokArticleTemplatesState = DEFAULT_FEATURES.grokArticlePromptTemplates.map((tpl) => ({ ...tpl }));
-let grokSelectedArticleTemplateId = DEFAULT_FEATURES.grokSelectedArticlePromptId;
 
 function normalizeAiProvider(raw) {
   return ['x-grok', 'ollama', 'openai-compatible'].includes(raw) ? raw : DEFAULT_FEATURES.aiProvider;
@@ -676,14 +653,6 @@ chrome.storage.sync.get(STORAGE_DEFAULTS, (items) => {
   if (!grokTemplatesState.some((tpl) => tpl.id === grokSelectedTemplateId)) {
     grokSelectedTemplateId = grokTemplatesState[0]?.id || 'default';
   }
-  grokArticleTemplatesState = normalizeGrokTemplates(items.grokArticlePromptTemplates);
-  if (!grokArticleTemplatesState.length) {
-    grokArticleTemplatesState = DEFAULT_FEATURES.grokArticlePromptTemplates.map((t) => ({ ...t }));
-  }
-  grokSelectedArticleTemplateId = items.grokSelectedArticlePromptId || grokArticleTemplatesState[0]?.id || 'article-default';
-  if (!grokArticleTemplatesState.some((tpl) => tpl.id === grokSelectedArticleTemplateId)) {
-    grokSelectedArticleTemplateId = grokArticleTemplatesState[0]?.id || 'article-default';
-  }
   if (grokTempChatToggle) grokTempChatToggle.checked = items.grokTemporaryChat !== false;
   if (grokEnterReplyToggle) grokEnterReplyToggle.checked = items.grokEnterToReply === true;
   setAiProviderValue(normalizeAiProvider(items.aiProvider));
@@ -696,60 +665,117 @@ chrome.storage.sync.get(STORAGE_DEFAULTS, (items) => {
     updateAiProviderFields();
   });
   renderGrokTemplateEditor();
-  renderGrokArticleTemplateEditor();
   columnsState = normalizeColumns(items.leaderboardColumns);
   renderColList();
 });
 
 function renderGrokTemplateEditor() {
-  if (!grokTemplateSelect || !grokPromptInput || !grokTemplateNameInput) return;
-  setCustomSelectOptions(
-    grokTemplateSelect,
-    grokTemplatesState.map((tpl) => ({ value: tpl.id, label: tpl.name })),
-    grokSelectedTemplateId
-  );
+  if (!grokTemplateChips || !grokPromptInput || !grokTemplateNameInput) return;
   const active = grokTemplatesState.find((tpl) => tpl.id === grokSelectedTemplateId) || grokTemplatesState[0];
+  if (active) grokSelectedTemplateId = active.id;
+  grokTemplateChips.innerHTML = '';
+  grokTemplatesState.forEach((tpl) => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'tpl-chip';
+    chip.setAttribute('role', 'tab');
+    chip.setAttribute('aria-selected', String(tpl.id === grokSelectedTemplateId));
+    chip.dataset.templateId = tpl.id;
+    const label = document.createElement('span');
+    label.className = 'tpl-chip-label';
+    label.textContent = tpl.name;
+    chip.appendChild(label);
+    // Delete lives on the chip itself: the thing you remove is the thing you point at.
+    if (grokTemplatesState.length > 1) {
+      const del = document.createElement('span');
+      del.className = 'tpl-chip-del';
+      del.textContent = '×';
+      del.title = tr('btnDelete');
+      del.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        flushGrokTemplateEdits();
+        grokTemplatesState = grokTemplatesState.filter((t) => t.id !== tpl.id);
+        if (grokSelectedTemplateId === tpl.id) grokSelectedTemplateId = grokTemplatesState[0]?.id || 'default';
+        renderGrokTemplateEditor();
+        persistGrokTemplates();
+      });
+      chip.appendChild(del);
+    }
+    chip.addEventListener('click', () => {
+      if (tpl.id === grokSelectedTemplateId) return;
+      flushGrokTemplateEdits();
+      grokSelectedTemplateId = tpl.id;
+      renderGrokTemplateEditor();
+      persistGrokTemplates();
+    });
+    grokTemplateChips.appendChild(chip);
+  });
+  const add = document.createElement('button');
+  add.type = 'button';
+  add.className = 'tpl-chip tpl-chip-add';
+  add.textContent = '+';
+  add.title = tr('btnAdd');
+  add.addEventListener('click', () => {
+    flushGrokTemplateEdits();
+    const id = `custom-${Date.now()}`;
+    grokTemplatesState.push({
+      id,
+      name: tr('grokCustomTemplateName', [String(grokTemplatesState.length + 1)]),
+      prompt: DEFAULT_FEATURES.grokCommentPrompt,
+    });
+    grokSelectedTemplateId = id;
+    renderGrokTemplateEditor();
+    persistGrokTemplates();
+    grokTemplateNameInput.focus();
+    grokTemplateNameInput.select();
+  });
+  grokTemplateChips.appendChild(add);
   if (active) {
-    grokSelectedTemplateId = active.id;
-    setCustomSelectValue(grokTemplateSelect, active.id);
     grokTemplateNameInput.value = active.name;
     grokPromptInput.value = active.prompt;
   }
-  if (grokPromptDeleteBtn) grokPromptDeleteBtn.disabled = grokTemplatesState.length <= 1;
 }
 
-function persistGrokTemplates(messageKey = 'flashGrokPromptSaved') {
+// Edits are written straight into state, then debounced to storage — no Save
+// button to forget, and switching templates can't silently drop a draft.
+let grokTemplateSaveTimer = null;
+
+function flushGrokTemplateEdits() {
+  const active = grokTemplatesState.find((tpl) => tpl.id === grokSelectedTemplateId);
+  if (!active || !grokPromptInput || !grokTemplateNameInput) return;
+  const fallbackName = tr('grokCustomTemplateName', [String(grokTemplatesState.indexOf(active) + 1 || 1)]);
+  active.name = (grokTemplateNameInput.value || '').trim() || active.name || fallbackName;
+  active.prompt = (grokPromptInput.value || '').trim() || DEFAULT_FEATURES.grokCommentPrompt;
+}
+
+function scheduleGrokTemplateSave() {
+  clearTimeout(grokTemplateSaveTimer);
+  grokTemplateSaveTimer = setTimeout(() => {
+    flushGrokTemplateEdits();
+    const chip = grokTemplateChips?.querySelector(`.tpl-chip[data-template-id="${grokSelectedTemplateId}"] .tpl-chip-label`);
+    const active = grokTemplatesState.find((tpl) => tpl.id === grokSelectedTemplateId);
+    if (chip && active) chip.textContent = active.name;
+    persistGrokTemplates();
+  }, 400);
+}
+
+function showGrokTemplateSaved() {
+  if (!grokTplStatus) return;
+  grokTplStatus.dataset.on = '1';
+  clearTimeout(showGrokTemplateSaved._t);
+  showGrokTemplateSaved._t = setTimeout(() => { delete grokTplStatus.dataset.on; }, 1400);
+}
+
+function persistGrokTemplates(messageKey = '') {
   const active = grokTemplatesState.find((tpl) => tpl.id === grokSelectedTemplateId) || grokTemplatesState[0];
   chrome.storage.sync.set({
     grokCommentPrompt: active?.prompt || DEFAULT_FEATURES.grokCommentPrompt,
     grokPromptTemplates: grokTemplatesState,
     grokSelectedPromptId: active?.id || 'default',
-  }, () => flash(tr(messageKey)));
-}
-
-function renderGrokArticleTemplateEditor() {
-  if (!grokArticleTemplateSelect || !grokArticlePromptInput || !grokArticleTemplateNameInput) return;
-  setCustomSelectOptions(
-    grokArticleTemplateSelect,
-    grokArticleTemplatesState.map((tpl) => ({ value: tpl.id, label: tpl.name })),
-    grokSelectedArticleTemplateId
-  );
-  const active = grokArticleTemplatesState.find((tpl) => tpl.id === grokSelectedArticleTemplateId) || grokArticleTemplatesState[0];
-  if (active) {
-    grokSelectedArticleTemplateId = active.id;
-    setCustomSelectValue(grokArticleTemplateSelect, active.id);
-    grokArticleTemplateNameInput.value = active.name;
-    grokArticlePromptInput.value = active.prompt;
-  }
-  if (grokArticlePromptDeleteBtn) grokArticlePromptDeleteBtn.disabled = grokArticleTemplatesState.length <= 1;
-}
-
-function persistGrokArticleTemplates(messageKey = 'flashGrokPromptSaved') {
-  const active = grokArticleTemplatesState.find((tpl) => tpl.id === grokSelectedArticleTemplateId) || grokArticleTemplatesState[0];
-  chrome.storage.sync.set({
-    grokArticlePromptTemplates: grokArticleTemplatesState,
-    grokSelectedArticlePromptId: active?.id || 'article-default',
-  }, () => flash(tr(messageKey)));
+  }, () => {
+    if (messageKey) flash(tr(messageKey));
+    else showGrokTemplateSaved();
+  });
 }
 
 function renderColList() {
@@ -929,97 +955,19 @@ aiTestConnectionBtn?.addEventListener('click', () => {
   });
 });
 
-grokPromptSaveBtn?.addEventListener('click', () => {
-  const active = grokTemplatesState.find((tpl) => tpl.id === grokSelectedTemplateId);
-  const prompt = (grokPromptInput.value || '').trim() || DEFAULT_FEATURES.grokCommentPrompt;
-  if (active) {
-    const fallbackName = tr('grokCustomTemplateName', [String(grokTemplatesState.indexOf(active) + 1 || 1)]);
-    active.name = (grokTemplateNameInput.value || '').trim() || active.name || fallbackName;
-    active.prompt = prompt;
-  }
-  grokPromptInput.value = prompt;
-  renderGrokTemplateEditor();
-  persistGrokTemplates('flashGrokPromptSaved');
-});
+grokTemplateNameInput?.addEventListener('input', scheduleGrokTemplateSave);
+grokPromptInput?.addEventListener('input', scheduleGrokTemplateSave);
+// The popup can be dismissed mid-debounce; commit pending edits on the way out.
+const commitGrokTemplateEdits = () => { clearTimeout(grokTemplateSaveTimer); flushGrokTemplateEdits(); persistGrokTemplates(); };
+window.addEventListener('blur', commitGrokTemplateEdits);
+window.addEventListener('pagehide', commitGrokTemplateEdits);
 
 grokPromptResetBtn?.addEventListener('click', () => {
+  clearTimeout(grokTemplateSaveTimer);
   grokTemplatesState = DEFAULT_FEATURES.grokPromptTemplates.map((tpl) => ({ ...tpl }));
   grokSelectedTemplateId = DEFAULT_FEATURES.grokSelectedPromptId;
   renderGrokTemplateEditor();
   persistGrokTemplates('flashGrokPromptReset');
-});
-
-grokTemplateSelect?.addEventListener('change', () => {
-  grokSelectedTemplateId = grokTemplateSelect.value;
-  renderGrokTemplateEditor();
-  persistGrokTemplates('flashGrokPromptSaved');
-});
-
-grokPromptAddBtn?.addEventListener('click', () => {
-  const id = `custom-${Date.now()}`;
-  grokTemplatesState.push({
-    id,
-    name: tr('grokCustomTemplateName', [String(grokTemplatesState.length + 1)]),
-    prompt: DEFAULT_FEATURES.grokCommentPrompt,
-  });
-  grokSelectedTemplateId = id;
-  renderGrokTemplateEditor();
-  persistGrokTemplates('flashGrokPromptSaved');
-});
-
-grokPromptDeleteBtn?.addEventListener('click', () => {
-  if (grokTemplatesState.length <= 1) return;
-  grokTemplatesState = grokTemplatesState.filter((tpl) => tpl.id !== grokSelectedTemplateId);
-  grokSelectedTemplateId = grokTemplatesState[0]?.id || 'default';
-  renderGrokTemplateEditor();
-  persistGrokTemplates('flashGrokPromptSaved');
-});
-
-// Article-template handlers — parallel to the tweet-template handlers above.
-grokArticlePromptSaveBtn?.addEventListener('click', () => {
-  const active = grokArticleTemplatesState.find((tpl) => tpl.id === grokSelectedArticleTemplateId);
-  const prompt = (grokArticlePromptInput.value || '').trim()
-              || DEFAULT_FEATURES.grokArticlePromptTemplates[0].prompt;
-  if (active) {
-    active.name = (grokArticleTemplateNameInput.value || '').trim() || active.name || tr('grokArticleFallbackName');
-    active.prompt = prompt;
-  }
-  grokArticlePromptInput.value = prompt;
-  renderGrokArticleTemplateEditor();
-  persistGrokArticleTemplates('flashGrokPromptSaved');
-});
-
-grokArticlePromptResetBtn?.addEventListener('click', () => {
-  grokArticleTemplatesState = DEFAULT_FEATURES.grokArticlePromptTemplates.map((tpl) => ({ ...tpl }));
-  grokSelectedArticleTemplateId = DEFAULT_FEATURES.grokSelectedArticlePromptId;
-  renderGrokArticleTemplateEditor();
-  persistGrokArticleTemplates('flashGrokPromptReset');
-});
-
-grokArticleTemplateSelect?.addEventListener('change', () => {
-  grokSelectedArticleTemplateId = grokArticleTemplateSelect.value;
-  renderGrokArticleTemplateEditor();
-  persistGrokArticleTemplates('flashGrokPromptSaved');
-});
-
-grokArticlePromptAddBtn?.addEventListener('click', () => {
-  const id = `article-custom-${Date.now()}`;
-  grokArticleTemplatesState.push({
-    id,
-    name: tr('grokArticleCustomTemplateName', [String(grokArticleTemplatesState.length + 1)]),
-    prompt: DEFAULT_FEATURES.grokArticlePromptTemplates[0].prompt,
-  });
-  grokSelectedArticleTemplateId = id;
-  renderGrokArticleTemplateEditor();
-  persistGrokArticleTemplates('flashGrokPromptSaved');
-});
-
-grokArticlePromptDeleteBtn?.addEventListener('click', () => {
-  if (grokArticleTemplatesState.length <= 1) return;
-  grokArticleTemplatesState = grokArticleTemplatesState.filter((tpl) => tpl.id !== grokSelectedArticleTemplateId);
-  grokSelectedArticleTemplateId = grokArticleTemplatesState[0]?.id || 'article-default';
-  renderGrokArticleTemplateEditor();
-  persistGrokArticleTemplates('flashGrokPromptSaved');
 });
 
 leaderboardCountInput.addEventListener('change', () => {

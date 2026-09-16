@@ -41,6 +41,9 @@
   "btnDelete": {
     "message": "删除"
   },
+  "btnResetTemplates": { "message": "恢复默认模板" },
+  "grokTplSaved": { "message": "已保存" },
+  "grokTplNamePlaceholder": { "message": "模板名称" },
   "flashSaved": {
     "message": "已保存 ✓"
   },
@@ -377,7 +380,7 @@
     "message": "Grok 评论提示词"
   },
   "popupGrokPromptHint": {
-    "message": "用 [推文内容] 表示原推文插入位置。点击回复框里的 AI 生成后选择模板，生成完成后再从 Options 中选择一条填入。"
+    "message": "只写要求就行 —— 缺少 [推文内容] 和「每条评论用代码块包裹」时会自动补上。想指定原推文插入位置就自己写 [推文内容]。点击回复框里的 AI 生成后选择模板，生成完成后再从 Options 中选择一条填入。"
   },
   "popupGrokTempChatLabel": {
     "message": "使用临时对话（不污染 Grok 历史记录）"
@@ -485,8 +488,7 @@
   "advBadgeThresholdsTitle": { "message": "徽章阈值与样式" },
   "advLeaderboardTitle":     { "message": "流速榜详情" },
   "advOtherFeaturesTitle":   { "message": "其它功能" },
-  "advGrokShortTitle":       { "message": "Grok 回复 — 短推模板" },
-  "advGrokArticleTitle":     { "message": "Grok 回复 — 长文模板" },
+  "advGrokShortTitle":       { "message": "AI 回复 — 提示词模板" },
   "aiProviderTitle": { "message": "AI 评论服务" },
   "aiProviderLabel": { "message": "服务来源" },
   "aiPlatformLabel": { "message": "平台" },
@@ -539,9 +541,7 @@
   "aboutShowUpdateNotes": { "message": "查看更新弹窗" },
   "aboutShowUpdateNotesSent": { "message": "已在当前 X 页面打开更新弹窗" },
   "aboutShowUpdateNotesNoTab": { "message": "请先打开一个 X 页面，再查看更新弹窗" },
-  "grokShortTemplateLabel": { "message": "推文模板（短推文，<600 字）" },
-  "grokArticleTemplateLabel": { "message": "文章模板（X Article / 长文，≥600 字时使用）" },
-  "grokArticleTemplateHint": { "message": "回复 X 上的长文 / Article 时自动使用这组模板。" },
+  "grokShortTemplateLabel": { "message": "提示词模板" },
   "popupGrokEnterReplyLabel": { "message": "按 Enter 直接回复" },
   "popupGrokEnterReplyHint": { "message": "开启后，单独按 Enter 会发送回复；Shift/Command/Ctrl/Alt+Enter 保持原有行为。" },
   "flashGrokEnterReplyOn": { "message": "已开启 Enter 直接回复" },
@@ -549,8 +549,6 @@
   "flashAiProviderSaved": { "message": "AI 评论服务设置已保存" },
   "grokDefaultTemplateName": { "message": "自然中文评论" },
   "grokCustomTemplateName": { "message": "模板 $N$", "placeholders": { "N": { "content": "$1" } } },
-  "grokArticleFallbackName": { "message": "文章模板" },
-  "grokArticleCustomTemplateName": { "message": "文章模板 $N$", "placeholders": { "N": { "content": "$1" } } },
   "contentLbHotOnly":      { "message": "仅看热帖" },
   "contentLbHotProTitle":  { "message": "流速过滤是 Pro 功能" },
   "contentLbHotProSub":    { "message": "隐藏低浏览量推文,保留真正在传播的内容" },

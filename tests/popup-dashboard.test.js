@@ -227,8 +227,6 @@ describe('#45 popup tabs structure (mock A)', () => {
     expect(/id="ai-provider-save"/.test(ai)).toBe(true);
     expect(/id="grok-template-select"/.test(ai)).toBe(true);
     expect(/id="grok-prompt"/.test(ai)).toBe(true);
-    expect(/id="grok-article-template-select"/.test(ai)).toBe(true);
-    expect(/id="grok-article-prompt"/.test(ai)).toBe(true);
   });
 
   it('About footer links to the project and maintainer X profile', () => {
@@ -242,8 +240,7 @@ describe('#45 popup tabs structure (mock A)', () => {
                       'feat-leaderboard', 'feat-copy-md', 'feat-starchart',
                       'feat-bookmark-folders', 'feat-bookmark-count', 'lb-count', 'lb-col-list',
                       'lb-reset-pos', 'lb-reset-msg',
-                      'grok-template-select', 'grok-prompt', 'grok-prompt-save',
-                      'grok-article-template-select', 'grok-article-prompt',
+                      'grok-template-select', 'grok-prompt', 'grok-template-name',
                       'language-select', 'language-toggle',
                       'rate-filter-section', 'xvm-pro-section']) {
       expect(new RegExp(`id="${id}"`).test(html), `popup.html must keep id="${id}"`).toBe(true);
@@ -254,7 +251,7 @@ describe('#45 popup tabs structure (mock A)', () => {
     expect(/<select\b|<option\b/.test(html)).toBe(false);
     expect(/document\.createElement\(\s*['"]option['"]\s*\)/.test(popupJs)).toBe(false);
     expect(/<select\b|<option\b/.test(userScript)).toBe(false);
-    expect((html.match(/class="xvm-select"/g) || []).length).toBe(5);
+    expect((html.match(/class="xvm-select"/g) || []).length).toBe(3);
   });
 
   it('loads scripts in order: build-channel → tier-logic → popup-pro → popup filters → popup.js → popup-dashboard', () => {
@@ -440,9 +437,8 @@ describe('#45 i18n keys (mock A + dual theme)', () => {
       'languageZh', 'languageEn', 'languageJa',
       'aboutUpdatesTitle', 'aboutUpdatesDesc', 'aboutShowUpdateNotes',
       'aboutShowUpdateNotesSent', 'aboutShowUpdateNotesNoTab',
-      'grokShortTemplateLabel', 'grokArticleTemplateLabel', 'grokArticleTemplateHint',
+      'grokShortTemplateLabel',
       'grokDefaultTemplateName', 'grokCustomTemplateName',
-      'grokArticleFallbackName', 'grokArticleCustomTemplateName',
       'aiProviderTitle', 'aiProviderLabel', 'aiPlatformLabel', 'aiBaseUrlLabel',
       'aiModelLabel', 'aiReplyCountLabel', 'aiApiKeyLabel', 'aiProviderHint',
       'aiProviderHintGrok', 'aiProviderHintOllama', 'aiProviderHintCloud',
@@ -464,7 +460,6 @@ describe('#45 i18n keys (mock A + dual theme)', () => {
     expect(/languageToggle\?\.addEventListener\(['"]click['"]/.test(popupJs)).toBe(true);
     expect(/function\s+isUnmodifiedBundledGrokTemplateSet/.test(popupJs)).toBe(true);
     expect(/isUnmodifiedBundledGrokTemplateSet\(grokTemplatesState,\s*['"]promptTemplates['"]\)/.test(popupJs)).toBe(true);
-    expect(/isUnmodifiedBundledGrokTemplateSet\(grokArticleTemplatesState,\s*['"]articlePromptTemplates['"]\)/.test(popupJs)).toBe(true);
     expect(/usesOnlyBundledGrokTemplates/.test(popupJs)).toBe(false);
   });
 
@@ -479,7 +474,6 @@ describe('#45 i18n keys (mock A + dual theme)', () => {
     expect(popupJs).toContain("id: 'tieba-laoge', name: '贴吧老哥'");
     expect(popupJs).toContain('为我生成针对该推文的10条评论,每条评论只包含可直接发布的评论正文，用代码块包裹。');
     expect(popupJs).toContain('用贴吧老哥的语气为该推文生成10条评论。整体阴阳怪气，但不带脏字、不人身攻击；保持口语感，不要装文艺、不要写得像新闻评论；每条评论控制在 30 字以内，简短精悍。');
-    expect(popupJs).toContain("id: 'article-deep', name: '深度回应'");
     expect(bridgeJs).toContain("id: 'short-cn', name: '中文短评'");
     expect(bridgeJs).toContain("id: 'tieba-laoge', name: '贴吧老哥'");
     expect(bridgeJs).toContain('用贴吧老哥的语气为该推文生成10条评论。整体阴阳怪气，但不带脏字、不人身攻击；保持口语感，不要装文艺、不要写得像新闻评论；每条评论控制在 30 字以内，简短精悍。');
