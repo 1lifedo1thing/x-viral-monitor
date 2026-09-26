@@ -10,7 +10,7 @@
 //
 (() => {
   const LICENSE_PROXY_URL = 'https://xvm-license.lengkuxiaomao.workers.dev';
-  const PRODUCT_SITE_URL = 'https://icy-cat.github.io/x-viral-monitor/#pro';
+  const PRODUCT_SITE_URL = 'https://xvm.icy-cat.com/#pro';
 
   // All tier-resolution logic lives in tier-logic.js (loaded BEFORE us via
   // <script> in popup.html). Single source of truth; eliminates mirror

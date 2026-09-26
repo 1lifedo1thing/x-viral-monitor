@@ -7,14 +7,14 @@
   <meta name="description" content="X Viral Monitor 为 X 时间线添加流速徽章和热点悬浮面板，帮助创作者发现正在起爆的推文，及时参与讨论并获取更多曝光。" />
   <meta name="application-name" content="X Viral Monitor" />
   <meta name="theme-color" content="#060812" />
-  <link rel="canonical" href="https://icy-cat.github.io/x-viral-monitor/" />
-  <link rel="alternate" hreflang="zh-CN" href="https://icy-cat.github.io/x-viral-monitor/" />
-  <link rel="alternate" hreflang="en" href="https://icy-cat.github.io/x-viral-monitor/?lang=en" />
-  <link rel="alternate" hreflang="ja" href="https://icy-cat.github.io/x-viral-monitor/?lang=ja" />
-  <link rel="alternate" hreflang="x-default" href="https://icy-cat.github.io/x-viral-monitor/" />
+  <link rel="canonical" href="https://xvm.icy-cat.com/" />
+  <link rel="alternate" hreflang="zh-CN" href="https://xvm.icy-cat.com/" />
+  <link rel="alternate" hreflang="en" href="https://xvm.icy-cat.com/?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://xvm.icy-cat.com/?lang=ja" />
+  <link rel="alternate" hreflang="x-default" href="https://xvm.icy-cat.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="X Viral Monitor" />
-  <meta property="og:url" content="https://icy-cat.github.io/x-viral-monitor/" />
+  <meta property="og:url" content="https://xvm.icy-cat.com/" />
   <meta property="og:title" content="X Viral Monitor - X 创作者流速徽章与热点监测插件" />
   <meta property="og:description" content="为 X 时间线添加流速徽章和热点悬浮面板，帮助创作者发现正在起爆的推文，及时参与讨论并获取更多曝光。" />
   <meta property="og:locale" content="zh_CN" />
@@ -32,7 +32,7 @@
       "operatingSystem": "Chrome, Edge",
       "softwareVersion": "1.7.13",
       "description": "X Viral Monitor adds velocity badges and a floating hot-post panel to X, helping creators find posts that are starting to take off and join the conversation earlier.",
-      "url": "https://icy-cat.github.io/x-viral-monitor/",
+      "url": "https://xvm.icy-cat.com/",
       "installUrl": "https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd",
       "codeRepository": "https://github.com/Icy-Cat/x-viral-monitor",
       "license": "https://github.com/Icy-Cat/x-viral-monitor/blob/main/LICENSE",
@@ -1006,7 +1006,7 @@
       const t = siteI18n[lang] || siteI18n.zh;
       document.documentElement.lang = t.lang;
       document.title = t.title;
-      const canonicalBase = 'https://icy-cat.github.io/x-viral-monitor/';
+      const canonicalBase = 'https://xvm.icy-cat.com/';
       const canonicalUrl = lang === 'zh' ? canonicalBase : `${canonicalBase}?lang=${lang}`;
       $('link[rel="canonical"]')?.setAttribute('href', canonicalUrl);
       $('meta[name="description"]')?.setAttribute('content', t.description);

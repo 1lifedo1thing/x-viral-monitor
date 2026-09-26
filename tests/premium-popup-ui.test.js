@@ -152,7 +152,7 @@ describe('#45 step 3 — popup pro UI', () => {
     for (const [name, source] of uiSources) {
       expect(source, `${name} must not link directly to Creem checkout`).not.toMatch(/creem\.io\/payment/);
       expect(source, `${name} must not expose checkout product ids`).not.toMatch(/prod_7f7t9EHK3RJlOK37DWr7J|prod_69yTiXGXb04DKm46DNVbN9/);
-      expect(source, `${name} should route Pro education to the product website`).toMatch(/https:\/\/icy-cat\.github\.io\/x-viral-monitor\/#pro/);
+      expect(source, `${name} should route Pro education to the product website`).toMatch(/https:\/\/xvm\.icy-cat\.com\/#pro/);
       expect(source, `${name} must not hard-code old Pro prices`).not.toMatch(/\$+\s*(?:2\.9|29)\b/);
     }
 

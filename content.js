@@ -10,7 +10,7 @@ let velocityThresholds = { ...DEFAULT_THRESHOLDS };
 let localizedStrings = {};
 function i18n(key) { return localizedStrings[key] || key; }
 function i18nOr(key, fallback) { return localizedStrings[key] || fallback; }
-const PRODUCT_SITE_PRO_URL = 'https://icy-cat.github.io/x-viral-monitor/#pro';
+const PRODUCT_SITE_PRO_URL = 'https://xvm.icy-cat.com/#pro';
 
 function applyLocalizedUi() {
   if (!leaderboardEl) return;
