@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twitter Views per Hour Explained - X Viral Monitor</title>
+<meta name="description" content="What twitter views per hour means, how it differs from total X views, how many views per hour counts as viral, and how to see it on every tweet for free.">
+<meta name="theme-color" content="#060812">
+<link rel="canonical" href="https://xvm.icy-cat.com/x-views-per-hour.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="X Viral Monitor">
+<meta property="og:url" content="https://xvm.icy-cat.com/x-views-per-hour.html">
+<meta property="og:title" content="Twitter Views per Hour Explained - X Viral Monitor">
+<meta property="og:description" content="What twitter views per hour means, how it differs from total X views, how many views per hour counts as viral, and how to see it on every tweet for free.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Twitter Views per Hour Explained - X Viral Monitor">
+<meta name="twitter:description" content="What twitter views per hour means, how it differs from total X views, how many views per hour counts as viral, and how to see it on every tweet for free.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Twitter views per hour: how fast a tweet is really spreading",
+      "description": "What twitter views per hour means, how it differs from total X views, how many views per hour counts as viral, and how to see it on every tweet for free.",
+      "url": "https://xvm.icy-cat.com/x-views-per-hour.html",
+      "mainEntityOfPage": "https://xvm.icy-cat.com/x-views-per-hour.html",
+      "datePublished": "2026-09-26",
+      "dateModified": "2026-09-26",
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name": "IcyCat",
+        "url": "https://github.com/Icy-Cat"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "X Viral Monitor",
+        "url": "https://xvm.icy-cat.com/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is views per hour an official X metric?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. X shows total views. Views per hour is computed from the total and the post time, which X also exposes, so anyone can calculate it. The extension just does it for every tweet automatically."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need X Premium to see views per hour?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. View counts on posts are public, and the badges work on a free X account. See X analytics without Premium for what Premium does and does not add."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I change what counts as viral?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The defaults are 1,000 views per hour for Trending and 10,000 for Viral, and both can be changed in the extension popup."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{color-scheme:dark;--bg:#060812;--panel:#0d1424;--ink:#f4f7ff;--muted:#94a4bd;--line:rgba(152,172,214,.18);--green:#58e44e;--amber:#ffb31a;--red:#ff332e;--blue:#48d8ff;--indigo:#7d8cff;--violet:#a78bfa;--radius:8px}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0c1222 0%,var(--bg) 42rem,#04060d 100%);color:var(--ink);font-family:"Aptos","Segoe UI",system-ui,sans-serif;line-height:1.65;font-size:17px;overflow-wrap:break-word}
+a{color:var(--blue)}
+.wrap{width:min(720px,calc(100% - 32px));margin:0 auto}
+.nav{border-bottom:1px solid var(--line);background:rgba(5,8,18,.78)}
+.nav .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand svg{width:30px;height:30px}
+.nav-cta{font-size:14px;font-weight:700;text-decoration:none}
+main{padding:44px 0 24px}
+.kicker{color:var(--blue);font:800 13px "Cascadia Code","SFMono-Regular",Consolas,monospace;text-transform:uppercase}
+h1{font-family:"Aptos Display","Segoe UI",system-ui,sans-serif;font-size:40px;line-height:1.1;margin:12px 0 16px;text-wrap:balance}
+h2{font-size:25px;line-height:1.2;margin:40px 0 12px}
+h3{font-size:19px;margin:26px 0 8px}
+.lead{color:#cbd6e9;font-size:19px}
+p,li{color:#d5deee}
+li{margin:6px 0}
+strong{color:var(--ink)}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:700}
+pre{background:#05080b;border:1px solid rgba(72,216,255,.18);border-radius:var(--radius);padding:14px;overflow-x:auto;font:13px/1.5 "Cascadia Code","SFMono-Regular",Consolas,monospace;color:#8be8ff;white-space:pre-wrap}
+code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;font-size:.9em}
+.note{border:1px solid var(--line);border-left:3px solid var(--indigo);background:var(--panel);border-radius:var(--radius);padding:12px 16px;margin:18px 0}
+.cta{margin:40px 0 8px;padding:22px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(120deg,rgba(72,216,255,.1),transparent 50%),var(--panel)}
+.cta h2{margin-top:0}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border-radius:var(--radius);font-weight:800;text-decoration:none;color:var(--ink);border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06)}
+.btn.primary{color:#06101f;border-color:transparent;background:linear-gradient(135deg,var(--blue),var(--indigo) 58%,var(--violet))}
+.related{margin-top:32px;color:var(--muted);font-size:15px}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0 36px;color:var(--muted);font-size:14px}
+.foot-links{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px}
+.foot-links a{color:var(--muted)}
+.foot-links a:hover{color:var(--ink)}
+@media (max-width:560px){body{font-size:16px}h1{font-size:31px}h2{font-size:22px}.lead{font-size:17px}.btn{width:100%}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 128 128" aria-hidden="true"><rect x="6" y="6" width="116" height="116" rx="25" fill="#12181f" stroke="#2b333d" stroke-width="3"/><rect x="23" y="78" width="20" height="30" rx="6" fill="#58e44e"/><rect x="54" y="58" width="22" height="50" rx="7" fill="#ffb31a"/><rect x="86" y="41" width="23" height="67" rx="7" fill="#ff332e"/><path d="M20 75C31 62 42 58 52 53C61 48 65 42 72 36C79 30 87 24 97 18" fill="none" stroke="#ff8a3d" stroke-width="5" stroke-linecap="round"/></svg><span>X Viral Monitor</span></a><a class="nav-cta" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Install</a></div></nav>
+<main class="wrap">
+<article>
+<span class="kicker">Guide</span>
+<h1>Twitter views per hour: how fast a tweet is really spreading</h1>
+<p class="lead">X shows how many times a tweet has been viewed. It does not show how fast those views are arriving, and that speed is what tells you whether a post is taking off right now or peaked last week.</p>
+
+<h2>Total views vs views per hour</h2>
+<p>The view count under a post on X is cumulative. It only ever goes up. A tweet posted this morning with 50,000 views and a tweet posted a month ago with 50,000 views look exactly the same, even though one is spreading fast and the other stopped moving weeks ago.</p>
+<p>Views per hour fixes that by dividing by age:</p>
+<pre>views per hour = total views ÷ hours since the tweet was posted</pre>
+<p>Two examples with the same total:</p>
+<ul>
+<li>12,000 views, posted 3 hours ago: <strong>4,000 views/hour</strong>. This one is moving.</li>
+<li>12,000 views, posted 4 days (96 hours) ago: <strong>125 views/hour</strong>. This one is done.</li>
+</ul>
+<p>Keep in mind that this is an average since posting, not a live speedometer. A tweet that exploded in its first hour and then stalled will keep a high average for a while. Checking the post's age next to the number avoids most misreadings.</p>
+
+<h2>What the X views number actually counts</h2>
+<p>X describes views as the number of times a post has been viewed. That makes it a reach number, not a count of unique readers: the same person seeing a post twice can count twice. It is still the best public signal for how far a post travelled, and it is the same number for everyone, so it works well for comparing posts.</p>
+<p>Posts from before X introduced view counts in late 2022 have no view number at all, so there is nothing to divide. Those tweets simply get no speed reading.</p>
+
+<h2>How many views per hour is viral?</h2>
+<p>X has no official definition. What counts as viral depends on the niche, the language and how big the author's audience already is. A useful answer still needs a number, so here are the defaults X Viral Monitor ships with:</p>
+<table>
+<thead><tr><th>Badge</th><th>Views per hour</th><th>Label</th></tr></thead>
+<tbody>
+<tr><td>🌱 green</td><td>under 1,000</td><td>Normal</td></tr>
+<tr><td>🚀 orange</td><td>1,000 to 9,999</td><td>Trending</td></tr>
+<tr><td>🔥 red</td><td>10,000 and up</td><td>Viral</td></tr>
+</tbody>
+</table>
+<p>For scale: a tweet that holds 1,000 views per hour for a full day reaches about 24,000 views. One that holds 10,000 per hour passes 240,000 views in a day. On most of X, that second case is what people mean when they say a post went viral.</p>
+<p>Both thresholds are adjustable. In the extension popup, open the badge thresholds setting and change the 🚀 Trending and 🔥 Viral numbers. If you follow a small niche, something like 300 and 3,000 may match your timeline better. The viral threshold is always kept above the trending one.</p>
+
+<h2>How to see views per hour on every tweet</h2>
+<ol>
+<li>Install X Viral Monitor from the <a href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Chrome Web Store</a> or <a href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Edge Add-ons</a>.</li>
+<li>Open x.com as usual. No extra login and no API key.</li>
+<li>Each tweet that has a view count gets a badge next to its action buttons, for example <code>🚀 4.2k/h</code>.</li>
+<li>Hover a badge to see views, likes, reposts, replies, bookmarks, the time it was posted, and a 0 to 100 viral score.</li>
+</ol>
+<p>You can pick between two badge styles in the popup: a colored pill or a plain inline number. The numbers come from the data X already sends to your browser when it loads tweets. The extension has no analytics SDK and sends nothing about your browsing anywhere.</p>
+<p>To rank the fastest posts on the page instead of scanning badges one by one, turn on the leaderboard. That workflow is covered in <a href="/find-viral-tweets.html">how to find viral tweets</a>.</p>
+
+<h2>Reading the number well</h2>
+<ul>
+<li><strong>Pair speed with age.</strong> A 🚀 tweet that is 40 minutes old is still climbing. A 🚀 tweet that is 20 hours old has been steady for a long time, which is also interesting, but the reply section is probably crowded.</li>
+<li><strong>Look past raw speed.</strong> The viral score in the tooltip weights velocity at 40%, engagement rate at 25%, the repost-to-like ratio at 20% and the bookmark-to-like ratio at 15%. A high score with modest speed often means a post people are saving and sharing, not just scrolling past.</li>
+<li><strong>Act early.</strong> A thoughtful reply on a post in its first hours is seen by far more people than the same reply a day later. If you want help drafting one, see the <a href="/ai-twitter-reply-generator.html">AI reply generator</a>.</li>
+</ul>
+<h2>FAQ</h2>
+<h3>Is views per hour an official X metric?</h3>
+<p>No. X shows total views. Views per hour is computed from the total and the post time, which X also exposes, so anyone can calculate it. The extension just does it for every tweet automatically.</p>
+<h3>Do I need X Premium to see views per hour?</h3>
+<p>No. View counts on posts are public, and the badges work on a free X account. See <a href="/x-analytics-without-premium.html">X analytics without Premium</a> for what Premium does and does not add.</p>
+<h3>Can I change what counts as viral?</h3>
+<p>Yes. The defaults are 1,000 views per hour for Trending and 10,000 for Viral, and both can be changed in the extension popup.</p>
+<section class="cta">
+<h2>Install X Viral Monitor</h2>
+<p>Free extension for Chrome and Microsoft Edge. Velocity badges, the leaderboard, bookmark counts, AI reply drafts and Markdown copy are all free; Pro ($2.9/month or $29/year, with a 14-day trial) adds the velocity filter.</p>
+<div class="btns"><a class="btn primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Add to Chrome</a><a class="btn" href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Get it for Edge</a><a class="btn" href="/">Product homepage</a></div>
+</section>
+<p class="related">Related: <a href="/find-viral-tweets.html">Find viral tweets</a> · <a href="/x-analytics-without-premium.html">X analytics without Premium</a> · <a href="/ai-twitter-reply-generator.html">AI reply generator</a> · <a href="/best-twitter-chrome-extensions.html">Best Twitter Chrome extensions</a> · <a href="/convert-tweet-to-markdown.html">Convert tweet to Markdown</a></p>
+</article>
+</main>
+<footer><div class="wrap">
+<div class="foot-links"><a href="/">X Viral Monitor home</a><a href="/x-views-per-hour.html">Twitter views per hour</a><a href="/find-viral-tweets.html">Find viral tweets</a><a href="/x-analytics-without-premium.html">X analytics without Premium</a><a href="/ai-twitter-reply-generator.html">AI reply generator</a><a href="/best-twitter-chrome-extensions.html">Best Twitter Chrome extensions</a><a href="/convert-tweet-to-markdown.html">Convert tweet to Markdown</a><a href="https://xmdpaste.icy-cat.com/">X Article Markdown Paste</a></div>
+<div>X Viral Monitor is made by IcyCat. Not affiliated with X Corp.</div>
+</div></footer>
+</body>
+</html>

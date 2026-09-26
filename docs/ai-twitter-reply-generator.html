@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Twitter Reply Generator Inside X - X Viral Monitor</title>
+<meta name="description" content="An AI Twitter reply generator that works inside the X reply box. Use Grok through your X login with no API key, or your own OpenAI, DeepSeek or local model.">
+<meta name="theme-color" content="#060812">
+<link rel="canonical" href="https://xvm.icy-cat.com/ai-twitter-reply-generator.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="X Viral Monitor">
+<meta property="og:url" content="https://xvm.icy-cat.com/ai-twitter-reply-generator.html">
+<meta property="og:title" content="AI Twitter Reply Generator Inside X - X Viral Monitor">
+<meta property="og:description" content="An AI Twitter reply generator that works inside the X reply box. Use Grok through your X login with no API key, or your own OpenAI, DeepSeek or local model.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AI Twitter Reply Generator Inside X - X Viral Monitor">
+<meta name="twitter:description" content="An AI Twitter reply generator that works inside the X reply box. Use Grok through your X login with no API key, or your own OpenAI, DeepSeek or local model.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "An AI Twitter reply generator that works inside the X reply box",
+      "description": "An AI Twitter reply generator that works inside the X reply box. Use Grok through your X login with no API key, or your own OpenAI, DeepSeek or local model.",
+      "url": "https://xvm.icy-cat.com/ai-twitter-reply-generator.html",
+      "mainEntityOfPage": "https://xvm.icy-cat.com/ai-twitter-reply-generator.html",
+      "datePublished": "2026-09-26",
+      "dateModified": "2026-09-26",
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name": "IcyCat",
+        "url": "https://github.com/Icy-Cat"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "X Viral Monitor",
+        "url": "https://xvm.icy-cat.com/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is the AI reply generator free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. It is part of the free extension. With Grok it uses your X account's Grok access; with other providers you pay that provider for your own API usage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it post replies automatically?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It fills the reply box with the candidate you click. You review it and press Reply yourself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need an API key?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not for Grok, which uses your logged-in X session. You only need a key if you choose an OpenAI-compatible provider. Local models through Ollama or LM Studio need no key either."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{color-scheme:dark;--bg:#060812;--panel:#0d1424;--ink:#f4f7ff;--muted:#94a4bd;--line:rgba(152,172,214,.18);--green:#58e44e;--amber:#ffb31a;--red:#ff332e;--blue:#48d8ff;--indigo:#7d8cff;--violet:#a78bfa;--radius:8px}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0c1222 0%,var(--bg) 42rem,#04060d 100%);color:var(--ink);font-family:"Aptos","Segoe UI",system-ui,sans-serif;line-height:1.65;font-size:17px;overflow-wrap:break-word}
+a{color:var(--blue)}
+.wrap{width:min(720px,calc(100% - 32px));margin:0 auto}
+.nav{border-bottom:1px solid var(--line);background:rgba(5,8,18,.78)}
+.nav .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand svg{width:30px;height:30px}
+.nav-cta{font-size:14px;font-weight:700;text-decoration:none}
+main{padding:44px 0 24px}
+.kicker{color:var(--blue);font:800 13px "Cascadia Code","SFMono-Regular",Consolas,monospace;text-transform:uppercase}
+h1{font-family:"Aptos Display","Segoe UI",system-ui,sans-serif;font-size:40px;line-height:1.1;margin:12px 0 16px;text-wrap:balance}
+h2{font-size:25px;line-height:1.2;margin:40px 0 12px}
+h3{font-size:19px;margin:26px 0 8px}
+.lead{color:#cbd6e9;font-size:19px}
+p,li{color:#d5deee}
+li{margin:6px 0}
+strong{color:var(--ink)}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:700}
+pre{background:#05080b;border:1px solid rgba(72,216,255,.18);border-radius:var(--radius);padding:14px;overflow-x:auto;font:13px/1.5 "Cascadia Code","SFMono-Regular",Consolas,monospace;color:#8be8ff;white-space:pre-wrap}
+code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;font-size:.9em}
+.note{border:1px solid var(--line);border-left:3px solid var(--indigo);background:var(--panel);border-radius:var(--radius);padding:12px 16px;margin:18px 0}
+.cta{margin:40px 0 8px;padding:22px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(120deg,rgba(72,216,255,.1),transparent 50%),var(--panel)}
+.cta h2{margin-top:0}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border-radius:var(--radius);font-weight:800;text-decoration:none;color:var(--ink);border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06)}
+.btn.primary{color:#06101f;border-color:transparent;background:linear-gradient(135deg,var(--blue),var(--indigo) 58%,var(--violet))}
+.related{margin-top:32px;color:var(--muted);font-size:15px}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0 36px;color:var(--muted);font-size:14px}
+.foot-links{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px}
+.foot-links a{color:var(--muted)}
+.foot-links a:hover{color:var(--ink)}
+@media (max-width:560px){body{font-size:16px}h1{font-size:31px}h2{font-size:22px}.lead{font-size:17px}.btn{width:100%}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 128 128" aria-hidden="true"><rect x="6" y="6" width="116" height="116" rx="25" fill="#12181f" stroke="#2b333d" stroke-width="3"/><rect x="23" y="78" width="20" height="30" rx="6" fill="#58e44e"/><rect x="54" y="58" width="22" height="50" rx="7" fill="#ffb31a"/><rect x="86" y="41" width="23" height="67" rx="7" fill="#ff332e"/><path d="M20 75C31 62 42 58 52 53C61 48 65 42 72 36C79 30 87 24 97 18" fill="none" stroke="#ff8a3d" stroke-width="5" stroke-linecap="round"/></svg><span>X Viral Monitor</span></a><a class="nav-cta" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Install</a></div></nav>
+<main class="wrap">
+<article>
+<span class="kicker">Guide</span>
+<h1>An AI Twitter reply generator that works inside the X reply box</h1>
+<p class="lead">Most AI reply tools make you copy a tweet into another tab, prompt a chatbot, and paste the answer back. X Viral Monitor puts the generator in the reply box itself, reads the tweet for you, and leaves the final choice to you.</p>
+
+<h2>How it works</h2>
+<ol>
+<li>Click reply on any tweet. An <strong>✦ AI</strong> button appears in the reply composer.</li>
+<li>Click it and pick a prompt template.</li>
+<li>Reply candidates stream in one by one. You can pick the first as soon as it appears; there is no need to wait for the full list.</li>
+<li>Click a candidate and it is inserted into X's reply editor. Edit it if you like, then press Reply yourself.</li>
+</ol>
+<p>Nothing is posted automatically. The generator writes drafts; you decide what goes out. The button only appears in reply boxes, not in the main compose box.</p>
+
+<h2>It reads the right context</h2>
+<p>The extension takes the tweet text from the data X already loaded, so you never copy or paste the source. When you reply to a comment under someone else's tweet, the prompt includes both the original tweet and the comment you are answering, so the model sees the conversation rather than one line out of context.</p>
+<p>Long posts and X Articles get their own set of templates, because a reply to a 2,000-word article needs a different approach than a reply to a one-liner.</p>
+
+<h2>Choose your AI provider</h2>
+<table>
+<thead><tr><th>Provider</th><th>What you need</th><th>Where the text goes</th></tr></thead>
+<tbody>
+<tr><td><strong>X Grok</strong> (default)</td><td>Just be logged in to X. No API key.</td><td>X's own Grok service, using your current session</td></tr>
+<tr><td><strong>OpenAI compatible</strong>: OpenAI, DeepSeek, OpenRouter, Kimi / Moonshot, Qwen / DashScope, SiliconFlow</td><td>Your own API key for that service</td><td>The provider you picked</td></tr>
+<tr><td><strong>Local</strong>: Ollama or LM Studio</td><td>The app running on your computer with a model downloaded</td><td>Stays on your machine</td></tr>
+</tbody>
+</table>
+<p>With Grok, the request runs from your browser through your existing X session. A temporary-chat option, on by default, keeps these requests out of your Grok history. Grok usage is subject to whatever limits X applies to your account. With a cloud provider, the tweet text and reply context are sent to that provider under your key. A <strong>Test connection</strong> button in the settings confirms the setup works before you rely on it.</p>
+
+<h2>Make the templates yours</h2>
+<p>The default templates cover a natural reply style plus a few alternatives. All of them are editable in the popup's AI replies tab, and you can add your own. A few details worth knowing:</p>
+<ul>
+<li>Tweet templates and article templates are stored separately.</li>
+<li>A placeholder marks where the source tweet goes. If you leave it out, the tweet is added automatically.</li>
+<li>You set how many candidates to generate, from 1 to 20. The default is 10.</li>
+<li>An optional setting lets plain Enter send the reply, so you do not need Command or Ctrl + Enter.</li>
+</ul>
+<p>Good templates describe your voice and your goal, not just "write a reply". For example: "Reply as a backend engineer. Add one concrete detail or example. No hashtags, no emojis, under 200 characters."</p>
+
+<h2>Use it well</h2>
+<p>AI drafts are a starting point. The replies that do well on X add something: a fact, a number, a counterexample, a personal experience. Treat the candidates as options to react to, not text to paste blind.</p>
+<ul>
+<li><strong>Reply where it counts.</strong> Replying early to a post that is gaining speed gets far more eyes than replying to one that peaked yesterday. The velocity badges show which is which; see <a href="/find-viral-tweets.html">how to find viral tweets</a>.</li>
+<li><strong>Edit before sending.</strong> Change at least a phrase so it sounds like you.</li>
+<li><strong>Do not mass-reply.</strong> Posting many similar replies quickly looks like spam to readers and to X's own systems. The tool is built for picking one good draft, not for volume.</li>
+</ul>
+<h2>FAQ</h2>
+<h3>Is the AI reply generator free?</h3>
+<p>Yes. It is part of the free extension. With Grok it uses your X account's Grok access; with other providers you pay that provider for your own API usage.</p>
+<h3>Does it post replies automatically?</h3>
+<p>No. It fills the reply box with the candidate you click. You review it and press Reply yourself.</p>
+<h3>Do I need an API key?</h3>
+<p>Not for Grok, which uses your logged-in X session. You only need a key if you choose an OpenAI-compatible provider. Local models through Ollama or LM Studio need no key either.</p>
+<section class="cta">
+<h2>Install X Viral Monitor</h2>
+<p>Free extension for Chrome and Microsoft Edge. Velocity badges, the leaderboard, bookmark counts, AI reply drafts and Markdown copy are all free; Pro ($2.9/month or $29/year, with a 14-day trial) adds the velocity filter.</p>
+<div class="btns"><a class="btn primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Add to Chrome</a><a class="btn" href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Get it for Edge</a><a class="btn" href="/">Product homepage</a></div>
+</section>
+<p class="related">Related: <a href="/x-views-per-hour.html">Twitter views per hour</a> · <a href="/find-viral-tweets.html">Find viral tweets</a> · <a href="/x-analytics-without-premium.html">X analytics without Premium</a> · <a href="/best-twitter-chrome-extensions.html">Best Twitter Chrome extensions</a> · <a href="/convert-tweet-to-markdown.html">Convert tweet to Markdown</a></p>
+</article>
+</main>
+<footer><div class="wrap">
+<div class="foot-links"><a href="/">X Viral Monitor home</a><a href="/x-views-per-hour.html">Twitter views per hour</a><a href="/find-viral-tweets.html">Find viral tweets</a><a href="/x-analytics-without-premium.html">X analytics without Premium</a><a href="/ai-twitter-reply-generator.html">AI reply generator</a><a href="/best-twitter-chrome-extensions.html">Best Twitter Chrome extensions</a><a href="/convert-tweet-to-markdown.html">Convert tweet to Markdown</a><a href="https://xmdpaste.icy-cat.com/">X Article Markdown Paste</a></div>
+<div>X Viral Monitor is made by IcyCat. Not affiliated with X Corp.</div>
+</div></footer>
+</body>
+</html>
