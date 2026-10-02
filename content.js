@@ -4596,13 +4596,40 @@ function closeOpenMenus() {
   }, 60);
 }
 
-function isShareMenu(menuEl) {
-  // Heuristic: the share dropdown contains a "copy link" item
-  if (menuEl.querySelector('[data-testid*="copy" i], [data-testid*="Link" i]')) return true;
+function menuItemLabel(item) {
+  return `${item.getAttribute('aria-label') || ''} ${item.textContent || ''}`.toLowerCase();
+}
+
+function isArticleBlockInsertMenu(menuEl) {
+  // X Articles' "+" inserter is a role="menu" too: 媒体 / GIF / 链接预览 /
+  // LaTeX / … . It portals to the layer root, so it cannot be excluded by
+  // ancestry. 链接预览 and リンクプレビュー are enough to identify it.
   const items = menuEl.querySelectorAll('[role="menuitem"]');
   for (const item of items) {
-    const label = (item.getAttribute('aria-label') || item.textContent || '').toLowerCase();
-    if (/copy link|copy post link|链接|リンク/.test(label)) return true;
+    if (/链接预览|リンクプレビュー|link preview|preview link|\blatex\b/.test(menuItemLabel(item))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isShareMenu(menuEl) {
+  // Only the native share dropdown, which contains a copy-link action.
+  // A bare 链接 / リンク / *Link* test id also matches the article inserter
+  // ("链接预览") and unrelated rows such as muteLink.
+  if (isArticleBlockInsertMenu(menuEl)) return false;
+
+  const testIdNodes = menuEl.querySelectorAll('[data-testid]');
+  for (const node of testIdNodes) {
+    const testid = node.getAttribute('data-testid') || '';
+    if (/copy/i.test(testid) && /link/i.test(testid)) return true;
+  }
+
+  const items = menuEl.querySelectorAll('[role="menuitem"]');
+  for (const item of items) {
+    if (/copy link|copy post link|复制(?:帖子|推文)?链接|リンクをコピー/.test(menuItemLabel(item))) {
+      return true;
+    }
   }
   return false;
 }
