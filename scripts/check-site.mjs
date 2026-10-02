@@ -29,6 +29,7 @@ try {
           background: getComputedStyle(document.body).backgroundColor,
           primary: getComputedStyle(document.querySelector('.hero .primary')).backgroundColor,
           links: [...document.querySelectorAll('.btn')].map(a => a.getAttribute('href')),
+          edgeLinks: [...document.querySelectorAll('a[href^="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd"]')].map(a => a.textContent),
         }));
         assert.equal(state.width, width);
         assert.equal(state.scrollWidth, width, `${path} overflows at ${width}px`);
@@ -36,6 +37,7 @@ try {
         assert.equal(state.background, colorScheme === 'light' ? 'rgb(242, 242, 247)' : 'rgb(28, 28, 30)');
         assert.equal(state.primary, colorScheme === 'light' ? 'rgb(0, 104, 217)' : 'rgb(77, 163, 255)');
         assert(state.links.every(Boolean));
+        assert.deepEqual(state.edgeLinks, [lang === 'en' ? 'Install Edge extension' : lang === 'ja' ? 'Edge 拡張を入れる' : '安装 Edge 扩展', lang === 'en' ? 'Install Edge extension' : lang === 'ja' ? 'Edge 拡張を入れる' : '安装 Edge 扩展', 'Edge Add-ons']);
         if (width !== 768) await page.screenshot({ path: `/tmp/xvm-checked-${lang}-${width}-${colorScheme}.png`, fullPage: true });
         console.log(`PASS ${path} ${width}px ${colorScheme}`);
       }
