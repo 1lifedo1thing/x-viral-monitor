@@ -13,6 +13,7 @@ const ORIGIN = 'https://xvm.icy-cat.com';
 const LANGS = { en: { path: '/', hreflang: 'en' }, zh: { path: '/zh/', hreflang: 'zh-CN' }, ja: { path: '/ja/', hreflang: 'ja' } };
 const version = JSON.parse(readFileSync(resolve(ROOT, 'manifest.json'), 'utf8')).version;
 const template = pathToFileURL(resolve(ROOT, 'site/index.html')).href;
+copyFileSync(resolve(ROOT, 'icons/icon128.png'), resolve(ROOT, 'docs/favicon.png'));
 
 for (const asset of ['icycat-uiux.css', 'site.css']) {
   copyFileSync(resolve(ROOT, 'site', asset), resolve(ROOT, 'docs', asset));
