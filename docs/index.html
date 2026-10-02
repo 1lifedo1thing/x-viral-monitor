@@ -5,7 +5,7 @@
   <title>X Viral Monitor - See X Views per Hour and Find Viral Tweets Early</title>
   <meta name="description" content="Free Chrome and Edge extension that shows X (Twitter) views per hour on every tweet. Spot viral tweets while they take off, rank the posts on your timeline, and join the conversation earlier.">
   <meta name="application-name" content="X Viral Monitor">
-  <meta name="theme-color" content="#060812">
+  <meta name="theme-color" content="#F2F2F7">
   <link rel="canonical" href="https://xvm.icy-cat.com/"><link rel="alternate" hreflang="x-default" href="https://xvm.icy-cat.com/"><link rel="alternate" hreflang="ja" href="https://xvm.icy-cat.com/ja/"><link rel="alternate" hreflang="zh-CN" href="https://xvm.icy-cat.com/zh/"><link rel="alternate" hreflang="en" href="https://xvm.icy-cat.com/">
   
   
@@ -28,7 +28,7 @@
   "name": "X Viral Monitor",
   "applicationCategory": "BrowserApplication",
   "operatingSystem": "Chrome, Edge",
-  "softwareVersion": "1.18.14",
+  "softwareVersion": "1.18.15",
   "description": "X Viral Monitor adds velocity badges and a floating hot-post panel to X, helping creators find posts that are starting to take off and join the conversation earlier.",
   "url": "https://xvm.icy-cat.com/",
   "installUrl": "https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd",
@@ -57,624 +57,14 @@
   ],
   "inLanguage": "en"
 }</script>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #060812;
-      --bg-2: #090e1c;
-      --panel: #0d1424;
-      --panel-strong: #121d33;
-      --panel-glass: rgba(14, 22, 39, .72);
-      --ink: #f4f7ff;
-      --muted: #94a4bd;
-      --line: rgba(152, 172, 214, .18);
-      --green: #58e44e;
-      --amber: #ffb31a;
-      --red: #ff332e;
-      --orange: #ff7a2f;
-      --blue: #48d8ff;
-      --indigo: #7d8cff;
-      --violet: #a78bfa;
-      --shadow: 0 30px 90px rgba(0,0,0,.5);
-      --glow: 0 0 42px rgba(72, 216, 255, .18), 0 0 80px rgba(125, 140, 255, .14);
-      --radius: 8px;
-      --max: 1160px;
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      background:
-        linear-gradient(120deg, rgba(125, 140, 255, .12) 0 1px, transparent 1px 100%),
-        linear-gradient(180deg, #0c1222 0%, var(--bg) 42rem, #04060d 100%);
-      background-size: 180px 180px, auto;
-      color: var(--ink);
-      font-family: "Aptos", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      line-height: 1.55;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .18;
-      background-image:
-        linear-gradient(rgba(125, 140, 255, .18) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(72, 216, 255, .12) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: linear-gradient(180deg, #000 0%, transparent 72%);
-    }
-
-    a { color: inherit; text-decoration: none; }
-
-    .wrap {
-      width: min(var(--max), calc(100% - 40px));
-      margin: 0 auto;
-    }
-
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      border-bottom: 1px solid var(--line);
-      background: rgba(5, 8, 18, .78);
-      backdrop-filter: blur(20px) saturate(140%);
-    }
-
-    .nav-inner {
-      height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      letter-spacing: 0;
-      white-space: nowrap;
-    }
-
-    .brand svg { width: 34px; height: 34px; }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .nav-links a {
-      padding: 8px 10px;
-      border-radius: 999px;
-    }
-
-    .nav-links a:hover {
-      color: var(--ink);
-      background: rgba(255,255,255,.08);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .lang-switch {
-      display: inline-flex;
-      padding: 3px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
-    }
-
-    .lang-switch button {
-      min-width: 34px;
-      height: 28px;
-      padding: 0 8px;
-      border: 0;
-      border-radius: 999px;
-      color: var(--muted);
-      background: transparent;
-      font: inherit;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .lang-switch button[aria-pressed="true"] {
-      color: #06101f;
-      background: linear-gradient(135deg, var(--blue), var(--indigo));
-    }
-
-    .hero {
-      position: relative;
-      min-height: calc(100vh - 68px);
-      display: grid;
-      align-items: center;
-      overflow: hidden;
-      border-bottom: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, transparent 0%, rgba(72,216,255,.04) 54%, transparent 100%);
-    }
-
-    .hero-scene {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    .hero-scene::before {
-      content: "";
-      position: absolute;
-      inset: 7% -4% 0;
-      background:
-        linear-gradient(120deg, transparent 0 28%, rgba(72, 216, 255, .16) 28% 29%, transparent 29% 100%),
-        linear-gradient(152deg, transparent 0 46%, rgba(125, 140, 255, .18) 46% 47%, transparent 47% 100%),
-        linear-gradient(0deg, rgba(3,5,12,.9), transparent 52%);
-      transform: skewY(-6deg);
-      transform-origin: 20% 20%;
-    }
-
-    .hero-scene::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(180deg, rgba(255,255,255,.03) 0 1px, transparent 1px 12px);
-      opacity: .28;
-      pointer-events: none;
-    }
-
-    .ticker-board {
-      position: absolute;
-      right: max(24px, calc((100vw - var(--max)) / 2));
-      top: 11vh;
-      width: min(520px, 44vw);
-      padding: 16px;
-      border: 1px solid rgba(137, 157, 210, .22);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(17, 27, 50, .88), rgba(8, 13, 25, .82));
-      box-shadow: var(--shadow), var(--glow);
-      transform: rotate(-1deg);
-      backdrop-filter: blur(16px);
-    }
-
-    .ticker-board::before {
-      content: "LIVE VELOCITY";
-      display: block;
-      margin: 2px 4px 10px;
-      color: var(--blue);
-      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0;
-    }
-
-    .tweet-row {
-      display: grid;
-      grid-template-columns: 36px 1fr auto;
-      gap: 12px;
-      align-items: center;
-      min-height: 62px;
-      padding: 12px;
-      border-bottom: 1px solid rgba(152, 172, 214, .12);
-    }
-
-    .tweet-row:last-child { border-bottom: 0; }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #253047, #111827);
-      border: 1px solid rgba(152, 172, 214, .18);
-    }
-
-    .tweet-lines span {
-      display: block;
-      height: 8px;
-      margin: 7px 0;
-      border-radius: 99px;
-      background: rgba(183, 198, 231, .13);
-    }
-
-    .tweet-lines span:nth-child(1) { width: 82%; }
-    .tweet-lines span:nth-child(2) { width: 58%; }
-
-    .rate-pill {
-      min-width: 88px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 800;
-      color: #07100a;
-      background: linear-gradient(135deg, var(--green), #b9ff55);
-      box-shadow: 0 0 24px rgba(88, 228, 78, .18);
-    }
-
-    .rate-pill .rate-emoji {
-      font-size: 13px;
-      line-height: 1;
-    }
-
-    .tweet-row:nth-child(2) .rate-pill {
-      color: #1c0d00;
-      background: linear-gradient(135deg, var(--amber), #ff7a00);
-      box-shadow: 0 0 24px rgba(255, 179, 26, .18);
-    }
-
-    .tweet-row:nth-child(3) .rate-pill {
-      color: white;
-      background: linear-gradient(135deg, var(--red), #ff7430);
-      box-shadow: 0 0 24px rgba(255, 51, 46, .22);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      width: min(680px, 100%);
-      padding: 76px 0 92px;
-    }
-
-    .kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      color: var(--blue);
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0;
-      text-transform: uppercase;
-      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-    }
-
-    .kicker::before {
-      content: "";
-      width: 26px;
-      height: 2px;
-      background: var(--blue);
-    }
-
-    h1 {
-      margin: 20px 0 18px;
-      font-family: "Aptos Display", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      font-size: 88px;
-      line-height: .9;
-      letter-spacing: 0;
-      text-wrap: balance;
-    }
-
-    .lead {
-      max-width: 620px;
-      margin: 0 0 30px;
-      color: #cbd6e9;
-      font-size: 21px;
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      min-height: 46px;
-      padding: 12px 18px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: var(--radius);
-      font-weight: 800;
-      background: rgba(255,255,255,.06);
-      color: var(--ink);
-      box-shadow: 0 10px 28px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.06);
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
-    }
-
-    .btn.primary {
-      color: #06101f;
-      border-color: transparent;
-      background: linear-gradient(135deg, var(--blue), var(--indigo) 58%, var(--violet));
-      box-shadow: 0 16px 40px rgba(72, 216, 255, .2), 0 12px 34px rgba(125, 140, 255, .2);
-    }
-
-    .btn:hover { transform: translateY(-1px); }
-
-    section {
-      scroll-margin-top: 84px;
-      padding: 76px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    h2 {
-      margin: 0 0 18px;
-      font-family: "Aptos Display", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      font-size: 52px;
-      line-height: 1;
-      letter-spacing: 0;
-    }
-
-    .section-lead {
-      max-width: 760px;
-      margin: 0 0 28px;
-      color: var(--muted);
-      font-size: 18px;
-    }
-
-    .install-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
-
-    .install-grid.primary-install {
-      grid-template-columns: minmax(0, 720px);
-    }
-
-    .install-grid.primary-install .install-card {
-      min-height: 260px;
-    }
-
-    .install-card,
-    .price-card,
-    .feature-card {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background:
-        linear-gradient(180deg, rgba(25, 36, 65, .78), rgba(10, 15, 29, .72));
-      box-shadow: 0 18px 50px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.06);
-    }
-
-    .install-card::before,
-    .price-card::before,
-    .feature-card::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto;
-      height: 2px;
-      background: linear-gradient(90deg, var(--blue), var(--indigo), transparent);
-      opacity: .88;
-    }
-
-    .install-card {
-      min-height: 285px;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 22px;
-    }
-
-    .install-card strong,
-    .price-card strong,
-    .feature-card strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 20px;
-      letter-spacing: 0;
-    }
-
-    .install-card p,
-    .price-card p,
-    .feature-card p {
-      margin: 0;
-      color: #a9b7cf;
-    }
-
-    .tag {
-      display: inline-flex;
-      width: fit-content;
-      padding: 5px 9px;
-      border-radius: 999px;
-      color: #061009;
-      background: linear-gradient(135deg, #7cffd0, var(--green));
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .tag.orange { background: var(--amber); color: #180900; }
-    .tag.gray { background: linear-gradient(135deg, #d9e3ff, #aeb9d4); color: #0b1016; }
-
-    .steps {
-      margin: 18px 0 0;
-      padding-left: 19px;
-      color: #c8d3e6;
-    }
-
-    .steps li { margin: 7px 0; }
-
-    .pricing {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .price-card {
-      padding: 24px;
-    }
-
-    .price-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .price {
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: var(--radius);
-      background: rgba(0,0,0,.22);
-    }
-
-    .price:hover,
-    .install-card:hover,
-    .feature-card:hover {
-      border-color: rgba(72, 216, 255, .34);
-      box-shadow: 0 22px 58px rgba(0,0,0,.28), 0 0 46px rgba(72,216,255,.1), inset 0 1px 0 rgba(255,255,255,.08);
-    }
-
-    .price b {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 30px;
-      line-height: 1;
-    }
-
-    .matrix {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(13, 20, 36, .68);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-    }
-
-    .matrix th,
-    .matrix td {
-      padding: 15px;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top;
-      text-align: left;
-    }
-
-    .matrix tr:last-child th,
-    .matrix tr:last-child td { border-bottom: 0; }
-
-    .matrix th {
-      width: 26%;
-      color: #fff;
-      background: rgba(125, 140, 255, .08);
-    }
-
-    .matrix td {
-      color: #c4d0e6;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-
-    .community-links {
-      margin-top: 18px;
-    }
-
-    .feature-card {
-      padding: 18px;
-    }
-
-    .privacy-band {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      align-items: center;
-      padding: 26px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: var(--radius);
-      background:
-        linear-gradient(120deg, rgba(72,216,255,.12), transparent 42%),
-        rgba(15, 23, 42, .74);
-      box-shadow: var(--glow);
-    }
-
-    .code-lines {
-      padding: 18px;
-      border-radius: var(--radius);
-      background: #05080b;
-      border: 1px solid rgba(72,216,255,.18);
-      color: #8be8ff;
-      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-      font-size: 13px;
-      overflow: auto;
-    }
-
-    footer {
-      padding: 34px 0;
-      color: var(--muted);
-    }
-
-    footer .wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .foot-links {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .foot-guides { flex-basis: 100%; font-size: 14px; }
-
-    @media (max-width: 920px) {
-      .nav-links { display: none; }
-      h1 { font-size: 64px; }
-      h2 { font-size: 42px; }
-      .lead { font-size: 18px; }
-      .ticker-board {
-        top: 42px;
-        right: 24px;
-        width: min(420px, 54vw);
-        opacity: .52;
-      }
-      .hero-content { padding-bottom: 40px; }
-      .hero .wrap { padding-top: 34px; }
-      .install-grid,
-      .pricing,
-      .features,
-      .privacy-band { grid-template-columns: 1fr; }
-      .price-row { grid-template-columns: 1fr; }
-      .matrix { font-size: 14px; }
-      .matrix th,
-      .matrix td { display: block; width: 100%; }
-      .matrix th { border-bottom: 0; padding-bottom: 4px; }
-    }
-
-    @media (max-width: 560px) {
-      .wrap { width: min(100% - 24px, var(--max)); }
-      .hero { min-height: auto; }
-      h1 { font-size: 46px; }
-      h2 { font-size: 30px; line-height: 1.08; }
-      .lead { font-size: 17px; }
-      .ticker-board { display: none; }
-      .hero-content { padding: 52px 0 28px; }
-      .tweet-row { grid-template-columns: 28px 1fr; }
-      .rate-pill { grid-column: 2; width: fit-content; }
-      .avatar { width: 28px; height: 28px; }
-      section { padding: 54px 0; }
-      .btn { width: 100%; }
-      .brand span { display: none; }
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&amp;display=swap">
+  <link rel="stylesheet" href="/icycat-uiux.css?v=20261002">
+  <link rel="stylesheet" href="/site.css?v=20261002">
   <script src="/analytics.js" defer=""></script>
 </head>
-<body>
+<body class="ic-root" data-lang="mac">
   <nav class="nav">
     <div class="wrap nav-inner">
       <a class="brand" href="#top" aria-label="X Viral Monitor home">
@@ -726,9 +116,9 @@
           <h1>X views per hour, on every tweet</h1>
           <p class="lead">Total tweet views tell you what already happened. Views per hour tell you what is taking off right now. X Viral Monitor puts that number beside every tweet and ranks the hottest posts on your timeline, so creators can find viral tweets early, join the right discussions, and earn more exposure.</p>
           <div class="cta-row">
-            <a class="btn primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Install Chrome extension</a>
-            <a class="btn" href="#features">See core features</a>
-            <a class="btn" href="#pro">Learn Pro</a>
+            <a class="btn primary ic-btn ic-btn--primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Install Chrome extension</a>
+            <a class="btn ic-btn" href="#features">See core features</a>
+            <a class="btn ic-btn" href="#pro">Learn Pro</a>
           </div>
         </div>
       </div>
@@ -741,11 +131,11 @@
         <div class="install-grid primary-install">
           <article class="install-card">
             <div>
-              <span class="tag">Recommended</span>
+              <span class="tag ic-badge ic-badge--ok">Recommended</span>
               <strong>Chrome / Edge extension</strong>
               <p>Add velocity badges, the floating hot-post panel, long-image reading, content filtering, and Grok reply help directly to X.</p>
             </div>
-            <a class="btn primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Install from Web Store</a>
+            <a class="btn primary ic-btn ic-btn--primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Install from Web Store</a>
           </article>
         </div>
       </div>
@@ -776,13 +166,13 @@
                 <b>$2.9</b>
                 <span>Monthly subscription</span>
                 <p>Good for a short trial.</p>
-                <p><a class="btn" href="https://www.creem.io/payment/prod_7f7t9EHK3RJlOK37DWr7J">Buy monthly</a></p>
+                <p><a class="btn ic-btn" href="https://www.creem.io/payment/prod_7f7t9EHK3RJlOK37DWr7J">Buy monthly</a></p>
               </div>
               <div class="price">
                 <b>$29</b>
                 <span>Annual subscription, about 17% off</span>
                 <p>Good for long-term use.</p>
-                <p><a class="btn primary" href="https://www.creem.io/payment/prod_69yTiXGXb04DKm46DNVbN9">Buy annual</a></p>
+                <p><a class="btn primary ic-btn ic-btn--primary" href="https://www.creem.io/payment/prod_69yTiXGXb04DKm46DNVbN9">Buy annual</a></p>
               </div>
             </div>
           </article>
@@ -838,9 +228,9 @@
           </tbody>
         </table>
         <div class="cta-row community-links">
-          <a class="btn" href="https://raw.githubusercontent.com/Icy-Cat/x-viral-monitor/main/userscript/x-viral-monitor.user.js">Desktop script</a>
-          <a class="btn" href="https://raw.githubusercontent.com/Icy-Cat/x-viral-monitor/main/userscript/x-viral-monitor.mobile.user.js">Mobile script</a>
-          <a class="btn" href="https://github.com/Icy-Cat/x-viral-monitor">View source</a>
+          <a class="btn ic-btn" href="https://raw.githubusercontent.com/Icy-Cat/x-viral-monitor/main/userscript/x-viral-monitor.user.js">Desktop script</a>
+          <a class="btn ic-btn" href="https://raw.githubusercontent.com/Icy-Cat/x-viral-monitor/main/userscript/x-viral-monitor.mobile.user.js">Mobile script</a>
+          <a class="btn ic-btn" href="https://github.com/Icy-Cat/x-viral-monitor">View source</a>
         </div>
       </div>
     </section>

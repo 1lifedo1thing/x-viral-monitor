@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Convert a Tweet to Markdown in One Click - X Viral Monitor</title>
 <meta name="description" content="Convert a tweet to Markdown straight from the X share menu: text, expanded links, images, author and date. Works for long X Articles and reply threads too.">
-<meta name="theme-color" content="#060812">
+<meta name="theme-color" content="#F2F2F7">
 <link rel="canonical" href="https://xvm.icy-cat.com/convert-tweet-to-markdown.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="X Viral Monitor">
@@ -64,47 +64,14 @@
   ]
 }
 </script>
-<style>
-:root{color-scheme:dark;--bg:#060812;--panel:#0d1424;--ink:#f4f7ff;--muted:#94a4bd;--line:rgba(152,172,214,.18);--green:#58e44e;--amber:#ffb31a;--red:#ff332e;--blue:#48d8ff;--indigo:#7d8cff;--violet:#a78bfa;--radius:8px}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#0c1222 0%,var(--bg) 42rem,#04060d 100%);color:var(--ink);font-family:"Aptos","Segoe UI",system-ui,sans-serif;line-height:1.65;font-size:17px;overflow-wrap:break-word}
-a{color:var(--blue)}
-.wrap{width:min(720px,calc(100% - 32px));margin:0 auto}
-.nav{border-bottom:1px solid var(--line);background:rgba(5,8,18,.78)}
-.nav .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink);text-decoration:none;white-space:nowrap}
-.brand svg{width:30px;height:30px}
-.nav-cta{font-size:14px;font-weight:700;text-decoration:none}
-main{padding:44px 0 24px}
-.kicker{color:var(--blue);font:800 13px "Cascadia Code","SFMono-Regular",Consolas,monospace;text-transform:uppercase}
-h1{font-family:"Aptos Display","Segoe UI",system-ui,sans-serif;font-size:40px;line-height:1.1;margin:12px 0 16px;text-wrap:balance}
-h2{font-size:25px;line-height:1.2;margin:40px 0 12px}
-h3{font-size:19px;margin:26px 0 8px}
-.lead{color:#cbd6e9;font-size:19px}
-p,li{color:#d5deee}
-li{margin:6px 0}
-strong{color:var(--ink)}
-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
-th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--muted);font-weight:700}
-pre{background:#05080b;border:1px solid rgba(72,216,255,.18);border-radius:var(--radius);padding:14px;overflow-x:auto;font:13px/1.5 "Cascadia Code","SFMono-Regular",Consolas,monospace;color:#8be8ff;white-space:pre-wrap}
-code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;font-size:.9em}
-.note{border:1px solid var(--line);border-left:3px solid var(--indigo);background:var(--panel);border-radius:var(--radius);padding:12px 16px;margin:18px 0}
-.cta{margin:40px 0 8px;padding:22px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(120deg,rgba(72,216,255,.1),transparent 50%),var(--panel)}
-.cta h2{margin-top:0}
-.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border-radius:var(--radius);font-weight:800;text-decoration:none;color:var(--ink);border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06)}
-.btn.primary{color:#06101f;border-color:transparent;background:linear-gradient(135deg,var(--blue),var(--indigo) 58%,var(--violet))}
-.related{margin-top:32px;color:var(--muted);font-size:15px}
-footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0 36px;color:var(--muted);font-size:14px}
-.foot-links{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px}
-.foot-links a{color:var(--muted)}
-.foot-links a:hover{color:var(--ink)}
-@media (max-width:560px){body{font-size:16px}h1{font-size:31px}h2{font-size:22px}.lead{font-size:17px}.btn{width:100%}}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap">
+<link rel="stylesheet" href="/icycat-uiux.css?v=20261002">
+<link rel="stylesheet" href="/site.css?v=20261002">
   <script src="/analytics.js" defer></script>
 </head>
-<body>
+<body class="ic-root guide" data-lang="mac">
 <nav class="nav"><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 128 128" aria-hidden="true"><rect x="6" y="6" width="116" height="116" rx="25" fill="#12181f" stroke="#2b333d" stroke-width="3"/><rect x="23" y="78" width="20" height="30" rx="6" fill="#58e44e"/><rect x="54" y="58" width="22" height="50" rx="7" fill="#ffb31a"/><rect x="86" y="41" width="23" height="67" rx="7" fill="#ff332e"/><path d="M20 75C31 62 42 58 52 53C61 48 65 42 72 36C79 30 87 24 97 18" fill="none" stroke="#ff8a3d" stroke-width="5" stroke-linecap="round"/></svg><span>X Viral Monitor</span></a><a class="nav-cta" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Install</a></div></nav>
 <main class="wrap">
 <article>
@@ -162,7 +129,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0 36px;colo
 <section class="cta">
 <h2>Install X Viral Monitor</h2>
 <p>Free extension for Chrome and Microsoft Edge. Velocity badges, the leaderboard, bookmark counts, AI reply drafts and Markdown copy are all free; Pro ($2.9/month or $29/year, with a 14-day trial) adds the velocity filter.</p>
-<div class="btns"><a class="btn primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Add to Chrome</a><a class="btn" href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Get it for Edge</a><a class="btn" href="/">Product homepage</a></div>
+<div class="btns"><a class="btn primary ic-btn ic-btn--primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Add to Chrome</a><a class="btn ic-btn" href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Get it for Edge</a><a class="btn ic-btn" href="/">Product homepage</a></div>
 </section>
 <p class="related">Related: <a href="/x-views-per-hour.html">Twitter views per hour</a> · <a href="/find-viral-tweets.html">Find viral tweets</a> · <a href="/x-analytics-without-premium.html">X analytics without Premium</a> · <a href="/ai-twitter-reply-generator.html">AI reply generator</a> · <a href="/best-twitter-chrome-extensions.html">Best Twitter Chrome extensions</a></p>
 </article>

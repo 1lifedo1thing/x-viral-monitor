@@ -4,7 +4,7 @@
 // 静态 HTML 里就是对应语言的正文和 TDK，搜索引擎不用执行 JS 也能读到；页内 JS 仍会按路径再套一次，结果相同。
 // 顺带生成 sitemap.xml（带 hreflang）和 robots.txt。改完 site/ 必须跑 `npm run build:site` 再提交 docs/。
 import { chromium } from 'playwright';
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -13,6 +13,10 @@ const ORIGIN = 'https://xvm.icy-cat.com';
 const LANGS = { en: { path: '/', hreflang: 'en' }, zh: { path: '/zh/', hreflang: 'zh-CN' }, ja: { path: '/ja/', hreflang: 'ja' } };
 const version = JSON.parse(readFileSync(resolve(ROOT, 'manifest.json'), 'utf8')).version;
 const template = pathToFileURL(resolve(ROOT, 'site/index.html')).href;
+
+for (const asset of ['icycat-uiux.css', 'site.css']) {
+  copyFileSync(resolve(ROOT, 'site', asset), resolve(ROOT, 'docs', asset));
+}
 
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
 const page = await browser.newPage();
