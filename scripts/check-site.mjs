@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -8,6 +8,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 try {
   const page = await browser.newPage();
+  await page.route(url => url.hostname !== 'xvm.icy-cat.com', route => route.abort());
   await page.route('https://xvm.icy-cat.com/**', async route => {
     const path = new URL(route.request().url()).pathname;
     const file = path.endsWith('/') ? `${path}index.html` : path;
@@ -37,6 +38,9 @@ try {
         assert.equal(state.background, colorScheme === 'light' ? 'rgb(242, 242, 247)' : 'rgb(28, 28, 30)');
         assert.equal(state.primary, colorScheme === 'light' ? 'rgb(0, 104, 217)' : 'rgb(77, 163, 255)');
         assert(state.links.every(Boolean));
+        const guideLinks = await page.locator('.foot-guides a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+        assert.equal(guideLinks.length, 6);
+        assert(guideLinks.every(href => href.startsWith(path) && existsSync(resolve(root, 'docs' + href))));
         assert.deepEqual(state.edgeLinks, [lang === 'en' ? 'Install Edge extension' : lang === 'ja' ? 'Edge 拡張を入れる' : '安装 Edge 扩展', lang === 'en' ? 'Install Edge extension' : lang === 'ja' ? 'Edge 拡張を入れる' : '安装 Edge 扩展', 'Edge Add-ons']);
         if (width !== 768) await page.screenshot({ path: `/tmp/xvm-checked-${lang}-${width}-${colorScheme}.png`, fullPage: true });
         console.log(`PASS ${path} ${width}px ${colorScheme}`);
@@ -50,13 +54,43 @@ try {
   for (const guide of ['x-views-per-hour', 'find-viral-tweets', 'x-analytics-without-premium', 'ai-twitter-reply-generator', 'best-twitter-chrome-extensions', 'convert-tweet-to-markdown']) {
     for (const width of [1440, 375]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`https://xvm.icy-cat.com/${guide}.html`);
-      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, `${guide} overflows`);
-      assert.equal(await page.locator('body').getAttribute('data-lang'), 'mac');
-      assert(await page.locator('h1').textContent());
-      console.log(`PASS ${guide} ${width}px`);
+      const source = readFileSync(resolve(root, 'site/guides/en', guide + '.html'), 'utf8');
+      for (const [prefix, lang] of [['/', 'en'], ['/zh/', 'zh-CN'], ['/ja/', 'ja']]) {
+        const url = `https://xvm.icy-cat.com${prefix}${guide}.html`;
+        await page.goto(url);
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, `${url} overflows`);
+        assert.equal(await page.locator('html').getAttribute('lang'), lang);
+        assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), url);
+        assert.equal(await page.locator('meta[property="og:url"]').getAttribute('content'), url);
+        assert.equal(await page.locator('link[rel="alternate"][hreflang]').count(), 4);
+        assert.equal(await page.locator('.lang-switch a').count(), 3);
+        assert.equal(await page.locator('.lang-switch a[aria-current="page"]').getAttribute('href'), prefix + guide + '.html');
+        assert.equal(await page.locator('article h2').count(), (source.match(/<h2>/g) || []).length);
+        assert.equal(await page.locator('article h3').count(), (source.match(/<h3>/g) || []).length);
+        const content = await page.locator('article').textContent();
+        if (lang === 'zh-CN') assert.match(content, /常见问题|如何搭配/);
+        if (lang === 'ja') assert.match(content, /よくある質問|どう組み合わせるか/);
+        const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+        assert.equal(data['@graph'][0].inLanguage, lang);
+        assert.equal(data['@graph'][0].mainEntityOfPage, url);
+        assert.equal(data['@graph'][0].headline, await page.locator('h1').textContent());
+        const localLinks = await page.locator('a[href^="/"]:not(.lang-switch a)').evaluateAll(links => links.map(a => a.getAttribute('href')));
+        assert(localLinks.every(href => href.startsWith(prefix) && existsSync(resolve(root, 'docs' + (href.endsWith('/') ? href + 'index.html' : href)))));
+        console.log(`PASS ${prefix}${guide}.html ${width}px`);
+      }
     }
+    await page.goto(`https://xvm.icy-cat.com/${guide}.html`);
+    await page.locator('.lang-switch a[hreflang="zh-CN"]').click();
+    await page.waitForURL(`https://xvm.icy-cat.com/zh/${guide}.html`);
+    await page.locator('.lang-switch a[hreflang="ja"]').click();
+    await page.waitForURL(`https://xvm.icy-cat.com/ja/${guide}.html`);
+    await page.locator('.lang-switch a[hreflang="en"]').click();
+    await page.waitForURL(`https://xvm.icy-cat.com/${guide}.html`);
   }
+  const sitemap = readFileSync(resolve(root, 'docs/sitemap.xml'), 'utf8');
+  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+  assert.equal(new Set(urls).size, 21);
+  assert(urls.every(url => existsSync(resolve(root, 'docs' + (new URL(url).pathname.endsWith('/') ? new URL(url).pathname + 'index.html' : new URL(url).pathname)))));
   assert.deepEqual(errors, []);
 } finally {
   await browser.close();

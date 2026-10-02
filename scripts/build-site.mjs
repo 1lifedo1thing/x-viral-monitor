@@ -21,6 +21,7 @@ for (const asset of ['icycat-uiux.css', 'site.css']) {
 
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
 const page = await browser.newPage();
+await page.route('https://**/*', route => route.abort());
 for (const [lang, { path }] of Object.entries(LANGS)) {
   await page.goto(`${template}?prerender=${lang}`);
   const html = await page.evaluate(({ lang, LANGS, ORIGIN, version }) => {
@@ -48,16 +49,111 @@ for (const [lang, { path }] of Object.entries(LANGS)) {
   writeFileSync(out, html);
   console.log(`wrote docs${path}index.html`);
 }
+const guideTitles = await page.evaluate(() => Object.fromEntries(Object.entries(siteI18n).map(([lang, t]) => [lang, t.guideTitles])));
+const guideNames = ['x-views-per-hour.html', 'find-viral-tweets.html', 'x-analytics-without-premium.html', 'ai-twitter-reply-generator.html', 'best-twitter-chrome-extensions.html', 'convert-tweet-to-markdown.html'];
+const extra = readdirSync(resolve(ROOT, 'site/guides/en')).filter(f => f.endsWith('.html'));
+const labels = {
+  en: { install: 'Install', home: 'X Viral Monitor home', related: 'Related:', cta: 'Install X Viral Monitor', chrome: 'Add to Chrome', edge: 'Get it for Edge', product: 'Product homepage', disclaimer: 'X Viral Monitor is made by IcyCat. Not affiliated with X Corp.', locale: 'en_US' },
+  zh: { install: '安装', home: 'X Viral Monitor 首页', related: '相关指南：', cta: '安装 X Viral Monitor', chrome: '安装 Chrome 扩展', edge: '安装 Edge 扩展', product: '产品首页', disclaimer: 'X Viral Monitor 由 IcyCat 制作，与 X Corp. 无关联。', locale: 'zh_CN', ctaText: '适用于 Chrome 和 Microsoft Edge 的免费扩展。流速徽章、热榜、书签数、AI 回复草稿和 Markdown 复制均免费；Pro 每月 $2.9 或每年 $29，提供 14 天试用，增加流速过滤功能。' },
+  ja: { install: 'インストール', home: 'X Viral Monitor ホーム', related: '関連ガイド：', cta: 'X Viral Monitor をインストール', chrome: 'Chrome に追加', edge: 'Edge に追加', product: '製品ホーム', disclaimer: 'X Viral Monitor は IcyCat が制作しています。X Corp. とは関係ありません。', locale: 'ja_JP', ctaText: 'Chrome と Microsoft Edge 向けの無料拡張です。流速バッジ、ランキング、ブックマーク数、AI 返信草稿、Markdown コピーは無料です。月額 $2.9 または年額 $29 の Pro は14日間試用でき、流速フィルターを追加します。' },
+};
+for (const file of extra) {
+  const source = readFileSync(resolve(ROOT, 'site/guides/en', file), 'utf8');
+  for (const [lang, { path }] of Object.entries(LANGS)) {
+    const fragment = lang === 'en' ? null : readFileSync(resolve(ROOT, 'site/guides', lang, file), 'utf8');
+    await page.setContent(source, { waitUntil: 'domcontentloaded' });
+    const html = await page.evaluate(({ lang, path, file, fragment, LANGS, ORIGIN, labels, guideTitles, guideNames }) => {
+      const t = labels[lang];
+      const article = document.querySelector('article');
+      const cta = article.querySelector('.cta').cloneNode(true);
+      const related = article.querySelector('.related').cloneNode(true);
+      if (fragment) {
+        const template = document.createElement('template');
+        template.innerHTML = fragment;
+        const translated = template.content.querySelector('article');
+        article.innerHTML = translated.innerHTML;
+        article.append(cta, related);
+        document.title = article.querySelector('h1').textContent + ' - X Viral Monitor';
+        document.querySelector('meta[name="description"]').content = translated.dataset.description;
+      }
+      document.documentElement.lang = LANGS[lang].hreflang;
+      const url = ORIGIN + path + file;
+      const description = document.querySelector('meta[name="description"]').content;
+      document.querySelector('link[rel="canonical"]').href = url;
+      document.querySelector('link[href*="/site.css"]').setAttribute('href', '/site.css?v=20261003');
+      for (const platform of ['og', 'twitter']) {
+        for (const [key, value] of Object.entries({ title: document.title, description })) {
+          document.querySelector(`meta[${platform === 'og' ? 'property' : 'name'}="${platform}:${key}"]`).content = value;
+        }
+      }
+      document.querySelector('meta[property="og:url"]').content = url;
+      document.querySelector('meta[property="og:locale"]').content = t.locale;
+      document.querySelectorAll('link[hreflang]').forEach(link => link.remove());
+      for (const [key, target] of [...Object.entries(LANGS), ['x-default', LANGS.en]]) {
+        const alternate = document.createElement('link');
+        alternate.rel = 'alternate';
+        alternate.hreflang = key === 'x-default' ? key : target.hreflang;
+        alternate.href = ORIGIN + target.path + file;
+        document.head.append(alternate);
+      }
+      const nav = document.querySelector('.nav .wrap');
+      const actions = document.createElement('div');
+      actions.className = 'nav-actions';
+      const install = nav.querySelector('.nav-cta');
+      install.textContent = t.install;
+      actions.append(install);
+      const switcher = document.createElement('nav');
+      switcher.className = 'lang-switch';
+      switcher.setAttribute('aria-label', 'Language');
+      for (const [key, text] of [['zh', '中'], ['en', 'EN'], ['ja', '日']]) {
+        const link = document.createElement('a');
+        link.href = LANGS[key].path + file;
+        link.hreflang = LANGS[key].hreflang;
+        link.lang = LANGS[key].hreflang;
+        link.textContent = text;
+        if (key === lang) link.setAttribute('aria-current', 'page');
+        switcher.append(link);
+      }
+      actions.append(switcher);
+      nav.append(actions);
+      article.querySelector('.cta h2').textContent = t.cta;
+      if (t.ctaText) article.querySelector('.cta p').textContent = t.ctaText;
+      article.querySelectorAll('.cta .btn').forEach((link, i) => { link.textContent = [t.chrome, t.edge, t.product][i]; });
+      article.querySelector('.related').firstChild.textContent = t.related + ' ';
+      document.querySelector('footer .wrap > div:last-child').textContent = t.disclaimer;
+      document.querySelectorAll('.related a, footer .foot-links a').forEach(link => {
+        const file = link.getAttribute('href').split('/').pop();
+        const i = guideNames.indexOf(file);
+        if (i >= 0) link.textContent = guideTitles[lang][i];
+        else if (link.getAttribute('href') === '/') link.textContent = t.home;
+      });
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (link.closest('.lang-switch') || !href.startsWith('/')) return;
+        if (href === '/') link.href = path;
+        else if (guideNames.includes(href.slice(1))) link.href = path + href.slice(1);
+      });
+      const ld = document.querySelector('script[type="application/ld+json"]');
+      const data = JSON.parse(ld.textContent);
+      const work = data['@graph'].find(item => item['@type'] === 'Article');
+      Object.assign(work, { headline: article.querySelector('h1').textContent, description, url, mainEntityOfPage: url, inLanguage: LANGS[lang].hreflang, dateModified: '2026-10-03' });
+      data['@graph'] = data['@graph'].filter(item => item['@type'] !== 'FAQPage');
+      const questions = [...article.querySelectorAll('h3')].map(heading => ({ '@type': 'Question', name: heading.textContent, acceptedAnswer: { '@type': 'Answer', text: heading.nextElementSibling.textContent } }));
+      if (questions.length) data['@graph'].push({ '@type': 'FAQPage', mainEntity: questions });
+      ld.textContent = JSON.stringify(data, null, 2);
+      return '<!doctype html>\n' + document.documentElement.outerHTML + '\n';
+    }, { lang, path, file, fragment, LANGS, ORIGIN, labels, guideTitles, guideNames });
+    writeFileSync(resolve(ROOT, 'docs', '.' + path, file), html);
+    console.log(`wrote docs${path}${file}`);
+  }
+}
 await browser.close();
 
-// 内容页（docs/*.html，英文单语）也进 sitemap
-const extra = readdirSync(resolve(ROOT, 'docs')).filter((f) => f.endsWith('.html') && f !== 'index.html');
-const alt = Object.values(LANGS).map((v) => `    <xhtml:link rel="alternate" hreflang="${v.hreflang}" href="${ORIGIN}${v.path}"/>`).join('\n')
-  + `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${ORIGIN}/"/>`;
-const urls = [
-  ...Object.values(LANGS).map((v) => `  <url>\n    <loc>${ORIGIN}${v.path}</loc>\n${alt}\n  </url>`),
-  ...extra.map((f) => `  <url>\n    <loc>${ORIGIN}/${f}</loc>\n  </url>`),
-];
+const urls = ['index.html', ...extra].flatMap(file => {
+  const suffix = file === 'index.html' ? '' : file;
+  const alt = [...Object.values(LANGS), { path: '/', hreflang: 'x-default' }].map(v => `    <xhtml:link rel="alternate" hreflang="${v.hreflang}" href="${ORIGIN}${v.path}${suffix}"/>`).join('\n');
+  return Object.values(LANGS).map(v => `  <url>\n    <loc>${ORIGIN}${v.path}${suffix}</loc>\n${alt}\n  </url>`);
+});
 writeFileSync(resolve(ROOT, 'docs/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`);
 writeFileSync(resolve(ROOT, 'docs/robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${ORIGIN}/sitemap.xml\n`);

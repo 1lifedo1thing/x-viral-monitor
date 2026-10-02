@@ -22,6 +22,8 @@ p, li, .lead, .section-lead { overflow-wrap: anywhere; }
 .lang-switch button { border: 0; border-radius: var(--ic-r); padding: 4px 8px; background: transparent; color: var(--ic-ink-2); font: 600 var(--ic-fs-sm)/1.4 var(--ic-font); cursor: pointer; }
 .lang-switch button[aria-pressed="true"] { background: var(--ic-surface); color: var(--ic-ink); box-shadow: 0 1px 3px color-mix(in srgb, var(--ic-ink) 12%, transparent); }
 .lang-switch button:focus-visible { outline: 2px solid var(--ic-brand); outline-offset: 2px; }
+.lang-switch a { border-radius: var(--ic-r); padding: 4px 8px; color: var(--ic-ink-2); font: 600 var(--ic-fs-sm)/1.4 var(--ic-font); }
+.lang-switch a[aria-current="page"] { background: var(--ic-surface); color: var(--ic-ink); box-shadow: 0 1px 3px color-mix(in srgb, var(--ic-ink) 12%, transparent); }
 .hero { max-width: var(--max); margin: 0 auto; padding: 64px 24px 72px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(340px, 5fr); gap: var(--ic-6); align-items: stretch; border-bottom: var(--rule); }
 .hero > .wrap { grid-column: 1; grid-row: 1; padding: 0; min-width: 0; }
 .hero-content { min-width: 0; }
@@ -126,4 +128,5 @@ footer .wrap { display: flex; flex-direction: column; align-items: center; gap: 
   .guide main.wrap { padding: 44px 20px 64px; }
   .guide .btns { display: grid; grid-template-columns: 1fr; }
   .guide .btns .ic-btn { justify-content: center; }
+  .guide .nav-cta { display: none; }
 }

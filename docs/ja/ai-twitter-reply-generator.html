@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja"><head>
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon.png?v=20261003">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X の返信欄で使える AI 返信生成 - X Viral Monitor</title>
+<meta name="description" content="X の返信欄で AI の草稿を生成。Grok、選んだクラウドサービス、ローカルモデルを使い、文脈とテンプレートを調整して自分で確認・送信できます。">
+<meta name="theme-color" content="#F2F2F7">
+<link rel="canonical" href="https://xvm.icy-cat.com/ja/ai-twitter-reply-generator.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="X Viral Monitor">
+<meta property="og:url" content="https://xvm.icy-cat.com/ja/ai-twitter-reply-generator.html">
+<meta property="og:title" content="X の返信欄で使える AI 返信生成 - X Viral Monitor">
+<meta property="og:description" content="X の返信欄で AI の草稿を生成。Grok、選んだクラウドサービス、ローカルモデルを使い、文脈とテンプレートを調整して自分で確認・送信できます。">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="X の返信欄で使える AI 返信生成 - X Viral Monitor">
+<meta name="twitter:description" content="X の返信欄で AI の草稿を生成。Grok、選んだクラウドサービス、ローカルモデルを使い、文脈とテンプレートを調整して自分で確認・送信できます。">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "X の返信欄で使える AI 返信生成",
+      "description": "X の返信欄で AI の草稿を生成。Grok、選んだクラウドサービス、ローカルモデルを使い、文脈とテンプレートを調整して自分で確認・送信できます。",
+      "url": "https://xvm.icy-cat.com/ja/ai-twitter-reply-generator.html",
+      "mainEntityOfPage": "https://xvm.icy-cat.com/ja/ai-twitter-reply-generator.html",
+      "datePublished": "2026-09-26",
+      "dateModified": "2026-10-03",
+      "inLanguage": "ja",
+      "author": {
+        "@type": "Person",
+        "name": "IcyCat",
+        "url": "https://github.com/Icy-Cat"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "X Viral Monitor",
+        "url": "https://xvm.icy-cat.com/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "AI 返信生成は無料ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "はい。拡張の無料機能です。Grok では自分の X アカウントの利用枠を使い、他のサービスでは自分の API 利用料金をその提供者に支払います。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "返信を自動投稿しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ。クリックした候補を返信欄に入れるだけです。自分で確認し、返信ボタンを押します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "API キーは必要ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ログイン済みの X セッションを使う Grok には不要です。OpenAI 互換サービスを選んだ場合だけ、そのサービスのキーが必要です。Ollama や LM Studio のローカルモデルにもキーは不要です。"
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&amp;display=swap">
+<link rel="stylesheet" href="/icycat-uiux.css?v=20261002">
+<link rel="stylesheet" href="/site.css?v=20261003">
+  <script src="/analytics.js" defer=""></script>
+<link rel="alternate" hreflang="en" href="https://xvm.icy-cat.com/ai-twitter-reply-generator.html"><link rel="alternate" hreflang="zh-CN" href="https://xvm.icy-cat.com/zh/ai-twitter-reply-generator.html"><link rel="alternate" hreflang="ja" href="https://xvm.icy-cat.com/ja/ai-twitter-reply-generator.html"><link rel="alternate" hreflang="x-default" href="https://xvm.icy-cat.com/ai-twitter-reply-generator.html"></head>
+<body class="ic-root guide" data-lang="mac">
+<nav class="nav"><div class="wrap"><a class="brand" href="/ja/"><svg viewBox="0 0 128 128" aria-hidden="true"><rect x="6" y="6" width="116" height="116" rx="25" fill="#12181f" stroke="#2b333d" stroke-width="3"></rect><rect x="23" y="78" width="20" height="30" rx="6" fill="#58e44e"></rect><rect x="54" y="58" width="22" height="50" rx="7" fill="#ffb31a"></rect><rect x="86" y="41" width="23" height="67" rx="7" fill="#ff332e"></rect><path d="M20 75C31 62 42 58 52 53C61 48 65 42 72 36C79 30 87 24 97 18" fill="none" stroke="#ff8a3d" stroke-width="5" stroke-linecap="round"></path></svg><span>X Viral Monitor</span></a><div class="nav-actions"><a class="nav-cta" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">インストール</a><nav class="lang-switch" aria-label="Language"><a href="/zh/ai-twitter-reply-generator.html" hreflang="zh-CN" lang="zh-CN">中</a><a href="/ai-twitter-reply-generator.html" hreflang="en" lang="en">EN</a><a href="/ja/ai-twitter-reply-generator.html" hreflang="ja" lang="ja" aria-current="page">日</a></nav></div></div></nav>
+<main class="wrap">
+<article>
+<span class="kicker">使い方ガイド</span>
+<h1>X の返信欄で使える AI 返信生成</h1>
+<p class="lead">多くの AI 返信ツールでは、投稿を別のタブにコピーし、チャットボットに指示を出して、答えを貼り戻します。X Viral Monitor は返信欄に生成機能を置き、投稿を自動で読み取り、最後の選択は利用者に任せます。</p>
+<h2>使い方</h2>
+<ol><li>投稿の返信ボタンを押すと、返信エディターに <strong>✦ AI</strong> ボタンが現れます。</li><li>ボタンを押して、プロンプトのテンプレートを選びます。</li><li>返信候補が一つずつストリーミングで生成されます。最初の候補が出たら選べるので、全件の完成を待つ必要はありません。</li><li>候補をクリックすると X の返信欄に入ります。必要に応じて編集し、最後は自分で返信ボタンを押します。</li></ol>
+<p>自動投稿はしません。生成するのは草稿で、公開する内容は自分で決めます。ボタンは返信欄にだけ表示され、通常の新規投稿欄には表示されません。</p>
+<h2>会話の文脈を読み取る</h2>
+<p>拡張は X が読み込んだデータから本文を取得するため、元の投稿をコピーする必要はありません。他の人の投稿についたコメントへ返信する場合は、元の投稿と返信対象のコメントを両方プロンプトに含めます。モデルは一文だけではなく、会話の文脈を読めます。</p>
+<p>長い投稿と X Articles には別のテンプレートを使います。2,000語の記事に返信する場合と、短い一文に返信する場合では、適切な書き方が異なるためです。</p>
+<h2>AI サービスを選ぶ</h2>
+<table><thead><tr><th>サービス</th><th>必要なもの</th><th>テキストの送信先</th></tr></thead><tbody>
+<tr><td><strong>X Grok</strong>（初期設定）</td><td>X にログインするだけ。API キーは不要です。</td><td>現在のセッションを使う X の Grok サービス</td></tr>
+<tr><td><strong>OpenAI 互換：</strong>OpenAI、DeepSeek、OpenRouter、Kimi / Moonshot、Qwen / DashScope、SiliconFlow</td><td>利用するサービスの自分の API キー</td><td>選択したサービス提供者</td></tr>
+<tr><td><strong>ローカル：</strong>Ollama または LM Studio</td><td>モデルをダウンロードし、PC 上でアプリを起動</td><td>自分の PC 内</td></tr>
+</tbody></table>
+<p>Grok へのリクエストは、ブラウザーから現在の X セッションを使って送信します。初期設定で有効な一時チャットを使うと、Grok の履歴に残りません。利用上限は X がアカウントに適用する条件に従います。クラウドサービスの場合は、投稿本文と返信の文脈を自分のキーでそのサービスへ送ります。設定の<strong>接続テスト</strong>で、利用前に動作を確認できます。</p>
+<h2>テンプレートを自分用にする</h2>
+<p>初期テンプレートには自然な返信と、いくつかの別の書き方があります。ポップアップの AI 返信タブですべて編集でき、新しいテンプレートも追加できます。</p>
+<ul><li>投稿用と記事用のテンプレートは別々に保存されます。</li><li>プレースホルダーが元の投稿の挿入位置を示します。省略した場合、投稿は自動で追加されます。</li><li>生成件数は1〜20件で、初期値は10件です。</li><li>任意の設定で Enter だけで返信を送信できます。Command または Ctrl + Enter を使う必要がなくなります。</li></ul>
+<p>よいテンプレートは「返信を書いて」だけでなく、自分の語り方と目的を示します。例えば「バックエンドエンジニアとして返信する。具体的な補足か例を一つ加える。ハッシュタグと絵文字は使わず、200文字以内にする」と指定できます。</p>
+<h2>活用のポイント</h2>
+<p>AI の草稿は出発点です。よい返信は、事実、数字、反例、自分の経験などを加えます。候補をそのまま貼る完成品ではなく、自分で判断する選択肢として使ってください。</p>
+<ul><li><strong>参加する投稿を選ぶ。</strong>昨日ピークを迎えた投稿より、今伸びている投稿への早い返信の方が見られやすくなります。流速バッジで区別できます。詳しくは<a href="/ja/find-viral-tweets.html">伸び始めた投稿の見つけ方</a>をご覧ください。</li><li><strong>送る前に編集する。</strong>少なくとも一つの表現を、自分の言い方に直してみてください。</li><li><strong>大量の返信をしない。</strong>似た返信を短時間に大量投稿すると、読者にも X のシステムにもスパムのように見えます。この機能は良い草稿を一つ選ぶためのものです。</li></ul>
+<h2>よくある質問</h2>
+<h3>AI 返信生成は無料ですか？</h3><p>はい。拡張の無料機能です。Grok では自分の X アカウントの利用枠を使い、他のサービスでは自分の API 利用料金をその提供者に支払います。</p>
+<h3>返信を自動投稿しますか？</h3><p>いいえ。クリックした候補を返信欄に入れるだけです。自分で確認し、返信ボタンを押します。</p>
+<h3>API キーは必要ですか？</h3><p>ログイン済みの X セッションを使う Grok には不要です。OpenAI 互換サービスを選んだ場合だけ、そのサービスのキーが必要です。Ollama や LM Studio のローカルモデルにもキーは不要です。</p>
+<section class="cta">
+<h2>X Viral Monitor をインストール</h2>
+<p>Chrome と Microsoft Edge 向けの無料拡張です。流速バッジ、ランキング、ブックマーク数、AI 返信草稿、Markdown コピーは無料です。月額 $2.9 または年額 $29 の Pro は14日間試用でき、流速フィルターを追加します。</p>
+<div class="btns"><a class="btn primary ic-btn ic-btn--primary" href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Chrome に追加</a><a class="btn ic-btn" href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Edge に追加</a><a class="btn ic-btn" href="/ja/">製品ホーム</a></div>
+</section><p class="related">関連ガイド： <a href="/ja/x-views-per-hour.html">1時間あたりの表示回数</a> · <a href="/ja/find-viral-tweets.html">伸び始めた投稿を探す</a> · <a href="/ja/x-analytics-without-premium.html">Premium なしの分析</a> · <a href="/ja/best-twitter-chrome-extensions.html">X 向けブラウザー拡張</a> · <a href="/ja/convert-tweet-to-markdown.html">投稿を Markdown に変換</a></p></article>
+</main>
+<footer><div class="wrap">
+<div class="foot-links"><a href="/ja/">X Viral Monitor ホーム</a><a href="/ja/x-views-per-hour.html">1時間あたりの表示回数</a><a href="/ja/find-viral-tweets.html">伸び始めた投稿を探す</a><a href="/ja/x-analytics-without-premium.html">Premium なしの分析</a><a href="/ja/ai-twitter-reply-generator.html">AI 返信生成</a><a href="/ja/best-twitter-chrome-extensions.html">X 向けブラウザー拡張</a><a href="/ja/convert-tweet-to-markdown.html">投稿を Markdown に変換</a><a href="https://xmdpaste.icy-cat.com/">X Article Markdown Paste</a></div>
+<div>X Viral Monitor は IcyCat が制作しています。X Corp. とは関係ありません。</div>
+</div></footer>
+
+
+</body></html>

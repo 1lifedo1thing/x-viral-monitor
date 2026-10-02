@@ -62,7 +62,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&amp;display=swap">
   <link rel="stylesheet" href="/icycat-uiux.css?v=20261002">
-  <link rel="stylesheet" href="/site.css?v=20261002">
+  <link rel="stylesheet" href="/site.css?v=20261003">
   <script src="/analytics.js" defer=""></script>
 </head>
 <body class="ic-root" data-lang="mac">
@@ -266,6 +266,8 @@
     const siteI18n = {
       zh: {
         lang: 'zh-CN',
+        guideHeading: '使用指南：',
+        guideTitles: ['推文每小时浏览量', '发现爆款推文', '不用 Premium 查看分析', 'AI 回复生成器', 'X 浏览器扩展推荐', '推文转 Markdown'],
         title: 'X Viral Monitor - X 创作者流速徽章与热点监测插件',
         ogLocale: 'zh_CN',
         description: 'X Viral Monitor 为 X 时间线添加流速徽章和热点悬浮面板，帮助创作者发现正在起爆的推文，及时参与讨论并获取更多曝光。',
@@ -310,6 +312,8 @@
       },
       en: {
         lang: 'en',
+        guideHeading: 'Guides:',
+        guideTitles: ['Twitter views per hour', 'Find viral tweets', 'X analytics without Premium', 'AI reply generator', 'Best Twitter Chrome extensions', 'Convert tweet to Markdown'],
         title: 'X Viral Monitor - See X Views per Hour and Find Viral Tweets Early',
         ogLocale: 'en_US',
         description: 'Free Chrome and Edge extension that shows X (Twitter) views per hour on every tweet. Spot viral tweets while they take off, rank the posts on your timeline, and join the conversation earlier.',
@@ -354,6 +358,8 @@
       },
       ja: {
         lang: 'ja',
+        guideHeading: '使い方ガイド：',
+        guideTitles: ['1時間あたりの表示回数', '伸び始めた投稿を探す', 'Premium なしの分析', 'AI 返信生成', 'X 向けブラウザー拡張', '投稿を Markdown に変換'],
         title: 'X Viral Monitor - X クリエイター向け流速バッジと注目投稿モニター',
         ogLocale: 'ja_JP',
         description: 'X Viral Monitor は X のタイムラインに流速バッジと注目投稿パネルを追加し、伸び始めた投稿を早く見つけて会話に参加しやすくします。',
@@ -471,6 +477,11 @@
       text('#privacy h2', t.privacyTitle);
       text('#privacy .section-lead', t.privacyLead);
       text('footer .wrap > span', t.footer);
+      text('.foot-guides > span', t.guideHeading);
+      $$('.foot-guides a').forEach((link, i) => {
+        link.textContent = t.guideTitles[i];
+        link.href = SITE_PATHS[lang] + link.pathname.split('/').pop();
+      });
       $$('.lang-switch button').forEach((btn) => {
         btn.setAttribute('aria-pressed', String(btn.dataset.lang === lang));
       });

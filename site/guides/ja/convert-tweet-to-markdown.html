@@ -1,0 +1,29 @@
+<article data-description="X の共有メニューから投稿を Markdown としてコピー。本文、元の URL、画像、投稿者、日時を保持し、X Articles と読み込み済みの返信にも対応します。">
+<span class="kicker">使い方ガイド</span>
+<h1>X の共有メニューから投稿を Markdown に変換する</h1>
+<p class="lead">投稿の文字だけを選択してコピーすると、後で役立つ投稿者、日時、元の投稿リンク、t.co の背後にある URL が失われます。X Viral Monitor の共有メニューにある Markdown コピーは、これらをまとめて残します。</p>
+<h2>Markdown を使う理由</h2>
+<p>Markdown はノートや文書で広く使われる形式です。Obsidian、Logseq、Notion、GitHub、多くの静的サイト生成ツール、AI チャットで扱えます。投稿を Markdown で保存すると、クリックできるリンク、画像、出典を保ったまま、さまざまなツールで使えます。</p>
+<p>手作業だと、文字を選択し、t.co の短縮リンクを一つずつ開いて実際の URL を取得し、投稿者と日時をコピーして書式を整える必要があります。</p>
+<h2>コピーする手順</h2>
+<ol><li><a href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Chrome</a> または <a href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Edge</a> 用の X Viral Monitor をインストールします。</li><li>投稿の操作バーにある、矢印の共有ボタンを押します。</li><li>X の共有メニューの下部から<strong>Markdown としてコピー（Copy as Markdown）</strong>を選びます。</li><li>好きな場所に貼り付けます。「コピーしました」という短い通知が出れば成功です。</li></ol>
+<p>この項目は初期設定で有効です。ポップアップのその他の機能設定で無効にできます。</p>
+<h2>コピーされる内容</h2>
+<p>通常の投稿は、次のような形式になります。以下はサンプルです。</p>
+<pre>今日、新しいビルドを公開します。更新履歴：https://example.com/changelog
+
+— [Jane Doe (@janedoe)](https://x.com/janedoe/status/1234567890) · 2026-09-20 14:05</pre>
+<ul><li><strong>本文：</strong>元の文章と改行を保持します。</li><li><strong>t.co リンクの展開：</strong>実際のリンク先 URL を使います。</li><li><strong>メディア：</strong>X がメディアデータを送っている場合、画像は Markdown の画像リンク、動画はリンクとして出力します。</li><li><strong>出典行：</strong>表示名、ユーザー名、元の投稿リンク、現地時間での公開日時を含みます。</li></ul>
+<h2>X Articles も変換できる</h2>
+<p>投稿が X Article の場合、プレビューだけでなく記事の本文全体を取得します。記事タイトルは <code>#</code> 見出しになり、カバー画像が先頭に入ります。小見出し、太字、斜体、取り消し線、リンク、リスト、引用、コードブロック、行内画像も Markdown に変換します。記事の保存、一部の引用、AI モデルへの要約依頼に便利です。</p>
+<h2>投稿と返信をまとめてコピーする</h2>
+<p>共有メニューの<strong>投稿とコメントをコピー（Copy tweet and comments）</strong>では、投稿の後に <code>## Comments</code> セクションが追加されます。ページで読み込まれた返信には番号が付き、それぞれの投稿者、リンク、日時も保持されます。コピーの前に下へスクロールして返信を読み込んでください。対象は X が読み込んだものだけです。議論の保存、公開した投稿への反応の収集、AI へ会話の文脈を渡す場合に使えます。</p>
+<h2>活用できる場面</h2>
+<ul><li><strong>Obsidian や Logseq：</strong>デイリーノートに貼れば、検索でき、元の投稿へ戻れます。</li><li><strong>調査や執筆：</strong>投稿者と日時が付いた引用を残せます。</li><li><strong>AI のプロンプト：</strong>投稿者と文脈を含む Markdown により、誰の発言かをモデルに推測させずに済みます。</li><li><strong>参考資料集：</strong>伸びた投稿を<a href="/x-views-per-hour.html">流速バッジ</a>の数字と一緒に保存し、後で分析できます。</li></ul>
+<h2>逆方向：Markdown を X Articles に取り込む</h2>
+<p>逆方向の変換は別の課題です。X Articles のエディターは Markdown を直接解釈しないため、Obsidian や AI チャットの草稿を貼ると、<code>#</code> や <code>**</code> が残ることがあります。同じ開発者による別の拡張 <a href="https://xmdpaste.icy-cat.com/">X Article Markdown Paste</a> は、貼り付け時に Markdown を変換し、見出し、リスト、コードブロック、画像、表を整えた状態で取り込みます。</p>
+<p>一緒に使える他のツールについては<a href="/best-twitter-chrome-extensions.html">X / Twitter 向け Chrome 拡張</a>をご覧ください。</p>
+<h2>よくある質問</h2>
+<h3>投稿の Markdown 変換は有料ですか？</h3><p>いいえ。Markdown コピーは X Viral Monitor の無料機能です。</p>
+<h3>投稿とコメントのコピーには会話全体が含まれますか？</h3><p>ページで読み込まれた、元の投稿への直接の返信を含みます。返信への返信など、深い階層は含みません。長い連続投稿の場合は、必要な投稿を個別にコピーしてください。</p>
+</article>

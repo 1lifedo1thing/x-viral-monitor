@@ -1,0 +1,29 @@
+<article data-description="从 X 分享菜单一键将推文复制为 Markdown，保留正文、真实链接、图片、作者和日期，也支持 X 长文及已加载的回复。">
+<span class="kicker">使用指南</span>
+<h1>从 X 分享菜单将推文复制为 Markdown</h1>
+<p class="lead">只选中文字复制推文，会丢掉许多日后有用的信息：作者、日期、原帖链接，以及 t.co 背后的真实网址。X Viral Monitor 在分享菜单中加入“复制为 Markdown”，将这些信息一起保留。</p>
+<h2>为什么使用 Markdown</h2>
+<p>Markdown 是笔记和文档的通用格式，Obsidian、Logseq、Notion、GitHub、多数静态网站生成器和 AI 聊天工具都能理解。把推文保存为 Markdown，可以保留可点击的链接、图片和来源，之后换到其他工具也方便使用。</p>
+<p>手工整理很繁琐：先选文字，再发现链接都是 t.co 短链接，于是逐一打开获取真实地址，复制作者和日期，最后重新排版。</p>
+<h2>如何复制</h2>
+<ol><li>安装 <a href="https://chromewebstore.google.com/detail/x-viral-monitor/dkplofpecmjmbhgjgleeflcnfgfkdfpd">Chrome</a> 或 <a href="https://microsoftedge.microsoft.com/addons/detail/cefdokfllohmgiccdbjokdagbgegpghd">Edge</a> 版 X Viral Monitor。</li><li>点击任意推文的分享按钮，即操作栏上的箭头图标。</li><li>在 X 分享菜单底部选择<strong>复制为 Markdown（Copy as Markdown）</strong>。</li><li>粘贴到你需要的地方。短暂出现的“已复制”提示表示操作成功。</li></ol>
+<p>这个选项默认开启，可以在扩展弹窗的其他功能设置中关闭。</p>
+<h2>复制结果包含什么</h2>
+<p>普通推文的输出类似这样，以下为示例内容：</p>
+<pre>今天发布新版本。完整更新记录：https://example.com/changelog
+
+— [Jane Doe (@janedoe)](https://x.com/janedoe/status/1234567890) · 2026-09-20 14:05</pre>
+<ul><li><strong>正文：</strong>保留原文和换行。</li><li><strong>展开 t.co 链接：</strong>使用真实目标网址。</li><li><strong>媒体：</strong>X 已发送媒体数据时，图片以 Markdown 图片链接输出，视频以链接输出。</li><li><strong>来源行：</strong>包含显示名、账号名、原帖链接，以及按你的本地时间显示的发布日期。</li></ul>
+<h2>X 长文也能转换</h2>
+<p>当推文是 X Article 长文时，复制功能会提取完整文章正文，而不只是预览。文章标题会变成 <code>#</code> 标题，封面图片放在前面。小节标题、粗体、斜体、删除线、链接、列表、引用、代码块和行内图片都会转换为 Markdown。这样便于归档文章、在写作中引用片段，或交给 AI 模型总结。</p>
+<h2>一起复制推文和回复</h2>
+<p>分享菜单中的另一个入口<strong>复制推文和评论（Copy tweet and comments）</strong>，会在推文之后添加 <code>## Comments</code> 部分。页面已加载的每条回复都会编号，并保留自己的作者、链接和日期。请先向下滚动加载更多回复，因为只会复制 X 已加载的内容。它适合保存讨论、收集发布帖反馈，或把相关对话交给 AI 作为上下文。</p>
+<h2>可以用在哪里</h2>
+<ul><li><strong>Obsidian 或 Logseq：</strong>粘贴到每日笔记，推文就能被搜索，并可回到原始来源。</li><li><strong>研究与写作：</strong>保留作者和日期的引文，之后更容易引用。</li><li><strong>AI 提示词：</strong>带作者和上下文的 Markdown，减少模型猜测“谁说了什么”。</li><li><strong>素材库：</strong>保存起量的帖子，再结合<a href="/x-views-per-hour.html">流速徽章</a>中的数字，之后研究它们为何有效。</li></ul>
+<h2>反向操作：把 Markdown 导入 X 长文</h2>
+<p>反过来是另一个问题。X 长文编辑器不直接理解 Markdown，从 Obsidian 或 AI 聊天粘贴草稿时，可能留下 <code>#</code> 和 <code>**</code> 标记。同一开发者制作的另一款扩展 <a href="https://xmdpaste.icy-cat.com/">X Article Markdown Paste</a>，会在粘贴到长文编辑器时转换 Markdown，让标题、列表、代码块、图片和表格按格式进入编辑器。</p>
+<p>想了解其他适合搭配使用的工具，见<a href="/best-twitter-chrome-extensions.html">X / Twitter Chrome 扩展推荐</a>。</p>
+<h2>常见问题</h2>
+<h3>将推文转换为 Markdown 要付费吗？</h3><p>不需要。复制为 Markdown 属于 X Viral Monitor 的免费功能。</p>
+<h3>“复制推文和评论”会包含整个讨论串吗？</h3><p>它包含页面已加载的、直接回复这条推文的评论，不包含更深层的回复。如果是较长的作者连续发帖串，请分别复制需要的推文。</p>
+</article>
