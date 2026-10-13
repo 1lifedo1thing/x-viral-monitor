@@ -477,6 +477,59 @@ describe('bookmark timeline injection', () => {
     expect(storage.bookmarkTimelineAutoAttemptAt.folders['1000']).toBeGreaterThan(0);
   });
 
+  it('keeps transient refreshFolders failures off extension warnings', async () => {
+    expect(bridge).toContain('isTransientFolderFetchError');
+    expect(bridge).toContain("console.debug('[XVM] refreshFolders failed'");
+    expect(bridge).toContain("console.warn('[XVM] refreshFolders failed'");
+    expect(bridge).toContain("'x-twitter-active-user': 'true'");
+
+    const start = bridge.indexOf('function isTransientFolderFetchError(');
+    const end = bridge.indexOf('\nsafeChromeCall(() => {\n  chrome.storage.local.get({ bookmarkFoldersCache: null }', start);
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+
+    const warnings = [];
+    const debugs = [];
+    let calls = 0;
+    const fetchImpl = async () => {
+      calls += 1;
+      throw new TypeError('Failed to fetch');
+    };
+    const refreshFolders = Function(
+      'fetch',
+      'console',
+      'document',
+      'chrome',
+      'safeChromeCall',
+      'pushFolders',
+      'OP_LIST',
+      'X_BEARER',
+      'setTimeout',
+      `
+        let bookmarkRefreshInFlight = null;
+        let bookmarkLastFetchAt = 0;
+        ${bridge.slice(start, end)}
+        return refreshFolders;
+      `,
+    )(
+      fetchImpl,
+      { warn: (...a) => warnings.push(a), debug: (...a) => debugs.push(a) },
+      { cookie: 'ct0=abc' },
+      { storage: { local: { set() {} }, sync: { set() {} } } },
+      (fn) => fn(),
+      () => {},
+      { qid: 'qid', name: 'BookmarkFoldersSlice' },
+      'Bearer x',
+      (fn) => { fn(); return 0; },
+    );
+
+    await refreshFolders();
+    expect(calls).toBe(2);
+    expect(warnings).toEqual([]);
+    expect(debugs).toHaveLength(1);
+    expect(String(debugs[0][0])).toContain('refreshFolders failed');
+  });
+
   it('keeps background failures out of extension warnings', async () => {
     // Given
     const start = bridge.indexOf('async function refreshBookmarkTimelineFolders(');

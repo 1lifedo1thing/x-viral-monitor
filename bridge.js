@@ -1563,13 +1563,21 @@ safeChromeCall(() => {
 let bookmarkRefreshInFlight = null;
 let bookmarkLastFetchAt = 0;
 
+function isTransientFolderFetchError(err) {
+  if (!err) return false;
+  if (err.name === 'AbortError') return true;
+  const msg = String(err.message || err);
+  return /failed to fetch|networkerror|load failed|network request failed/i.test(msg);
+}
+
 async function refreshFolders() {
   if (bookmarkRefreshInFlight) return bookmarkRefreshInFlight;
   if (Date.now() - bookmarkLastFetchAt < 3000) return null;
 
   bookmarkRefreshInFlight = (async () => {
     bookmarkLastFetchAt = Date.now();
-    try {
+
+    async function once() {
       const ct0 = document.cookie.match(/ct0=([^;]+)/)?.[1];
       if (!ct0) return;
 
@@ -1580,6 +1588,7 @@ async function refreshFolders() {
           authorization: X_BEARER,
           'x-csrf-token': ct0,
           'x-twitter-auth-type': 'OAuth2Session',
+          'x-twitter-active-user': 'true',
           'content-type': 'application/json',
         },
       });
@@ -1624,7 +1633,25 @@ async function refreshFolders() {
         });
       });
       pushFolders(folders, cachedAt);
+    }
+
+    try {
+      await once();
     } catch (err) {
+      // Isolated-world fetch is not the MAIN net-hook, but reloading the
+      // extension / navigating can still abort the request. Retry once and
+      // keep transient noise off chrome://extensions (same pattern as
+      // background BookmarkFolderTimeline refresh).
+      if (isTransientFolderFetchError(err)) {
+        try {
+          await new Promise((r) => setTimeout(r, 400));
+          await once();
+          return;
+        } catch (retryErr) {
+          console.debug('[XVM] refreshFolders failed', retryErr);
+          return;
+        }
+      }
       console.warn('[XVM] refreshFolders failed', err);
     } finally {
       bookmarkRefreshInFlight = null;

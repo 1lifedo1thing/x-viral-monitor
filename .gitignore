@@ -19,3 +19,4 @@ secrets/
 /xvm-*.png
 /liv-newtweet-*.png
 /content-filter-sample-report.json
+/scripts/upload-edge.mjs

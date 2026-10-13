@@ -522,7 +522,16 @@ window.__xvmNet?.onResponse(GRAPHQL_RE, async ({ url, response, source }) => {
     try { scanForTweets(response.json()); } catch (_) {}
   }
 });
-window.__xvmNet?.onResponsePatch(GRAPHQL_RE, ({ url, json }) => {
+// Ad prune + bookmark inject are separate patch subscribers. Match ONLY the
+// timeline ops they need so other GraphQL (BookmarkFoldersSlice, Viewer, …)
+// never enters response.clone().json() rewrite — MAIN-world callers like
+// bookmark-menu.js share this fetch hook.
+const TIMELINE_AD_PRUNE_RE = window.__xvmTimelineAdPrune?.TIMELINE_OPS
+  || /\/(?:i\/api\/)?graphql\/[^/]+\/(?:HomeTimeline|HomeLatestTimeline|ListLatestTweetsTimeline|UserTweets|UserTweetsAndReplies|UserMedia|SearchTimeline|TweetDetail|CommunityTweetsTimeline|CommunitiesMainTimeline|ExplorePage)\b/;
+window.__xvmNet?.onResponsePatch(TIMELINE_AD_PRUNE_RE, ({ url, json }) => {
+  return window.__xvmTimelineAdPrune?.patchTimelineResponse?.({ url, json });
+});
+window.__xvmNet?.onResponsePatch(/\/(?:i\/api\/)?graphql\/[^/]+\/HomeTimeline(?:\?|$)/, ({ url, json }) => {
   return maybeInjectBookmarkTimeline(url, json);
 });
 
@@ -3123,9 +3132,10 @@ function leaderboardCellForArticle(article) {
 // Whether the marker is actually hiding right now is gated by
 // html[data-xvm-rate-filter-on]. content-filter still uses an
 // always-active marker so it remains hard.
-// DOM-side net for ads that never passed through the GraphQL hook (cached
-// render, or a response shape the walker missed). X renders the disclosure as
-// its own leaf label; match the whole trimmed text so a post that merely says
+// Leaderboard-only fallback: skip any ad cell that still rendered despite
+// API-layer timeline prune (cached paint / missed shape). Does NOT hide or
+// collapse DOM — no scroll-restore arming. X renders the disclosure as its
+// own leaf label; match the whole trimmed text so a post that merely says
 // "ad" in its body is never hit, and skip the tweet body entirely.
 const PROMOTED_LABELS = new Set([
   'ad', 'ads', 'promoted', 'promoted tweet', 'sponsored',
@@ -4885,29 +4895,340 @@ else document.addEventListener('DOMContentLoaded', startMenuObserver);
 // ---------------------------------------------------------------------------
 // Back-navigation scroll-restore guard.
 //
-// X restores the reading position after a back-navigation with a retry loop
-// of relative scrollBy deltas checked against an anchor tweet. When an XVM
-// filter (content filter / rate filter) has collapsed cells — replies on a
-// conversation page, or slow tweets on the home/list/profile timeline — X's
-// anchor check never passes: a delta issued while the feed is still mounting
-// gets clamped, is re-issued at full size, and both eventually stick — the
-// page lands thousands of pixels past where the user was (verified live on
-// conversations: saved y≈1900 → X settles at ≈4534). The same failure hits
-// home → tweet → back when rate-filter hides re-collapse on remount. X's
-// loop is not fixable from outside, so we record the true position ourselves
-// and correct once X settles wrong.
+// X's SPA + virtual list often lands Back at the wrong window (Chrome clamps
+// programmatic scroll while feed height is still short). We do NOT cover the
+// UI with a freeze/snapshot overlay — clones ghost and misalign at the header.
+//
+// Light restore only:
+//   - Save tweetId + viewport offset (+ up to 8 visible anchors) on click.
+//   - On browser Back / BFCache: suppress X window.scrollTo/By (and scrollTop)
+//     briefly; wait for a plausible feed cell; ONE fine pin (repin only if
+//     drift persists). Never clamped coarse while scrollMax < want.y.
+//   - Prefer wait-for-anchor over coarse wake; at most one coarse after height
+//     quiets if the cell is still missing.
+//   - Pin/repin uses a short custom ease (~260ms) for the deep return hop;
+//     coarse and tiny corrections stay instant (native smooth fights the VL).
+//   - Quiet early-exit; no blank veil; no freeze overlay.
+//   - Cancel on real user scroll intent. Sidebar Home is not restored.
 (() => {
-  // Any XVM hide marker, whichever filter set it. Their presence is what
-  // breaks X's restore, so it also gates when this guard is allowed to act.
   const HIDE_SEL = '[data-xvm-content-filter-hidden], [data-xvm-rate-hidden]';
-  const saved = new Map(); // pageKey -> {y, anchorId, anchorTop}
-  let watch = null; // active post-back correction, at most one
+  const MAX_ANCHORS = 8;
+  const POST_GUARD_FEED_MS = 1600; // hard cap only
+  const POST_GUARD_HIDE_MS = 2200;
+  const QUIET_STABLE_MS = 160; // finish pinning this long after |d|<=24
+  const DEFEND_PAD_MS = 400;
+  const DEFEND_TAIL_MS = 700; // keep suppressing X after pin loop ends
+  const PIN_THRESH = 24;
+  const QUIET_THRESH = 96; // same band as REPIN — if we won't move again, finish
+  const REPIN_THRESH = 96; // avoid chase from virtualizer height churn
+  const REPIN_PERSIST_MS = 90; // drift must persist before re-pin
+  // Early coarse while scrollHeight is still rocketing lands in a phantom
+  // virtual window. Wait for height to quiet before the single wake.
+  const HEIGHT_STABLE_MS = 100;
+  const HEIGHT_STABLE_PX = 280;
+  const COARSE_FALLBACK_MS = 420; // if height never quiets, wake anyway
+  const saved = new Map(); // pageKey -> {y, anchors:[{id,top}], clickTs?}
+  let watch = null;
   let recScheduled = false;
 
-  // Conversation pages key by status id (stable across /user/status/N).
-  // Feed surfaces (home / lists / profile / …) key by normalized pathname
-  // so home → tweet → back can look up the outbound click capture after
-  // popstate has already swapped the URL back to the feed.
+  try { history.scrollRestoration = 'manual'; } catch (_) {}
+
+  let defendUntil = 0;
+  let allowScroll = false;
+  let suppressedScrolls = 0;
+  let restoreRun = null;
+  const dbgOn = () => !!(typeof window !== 'undefined' && window.__xvmScrollRestoreDebug);
+  const dbgGeom = () => {
+    const se = document.scrollingElement || document.documentElement;
+    const sh = Math.max(
+      se?.scrollHeight || 0,
+      document.documentElement?.scrollHeight || 0,
+      document.body?.scrollHeight || 0,
+    );
+    const vh = window.innerHeight || document.documentElement?.clientHeight || 0;
+    return {
+      scrollY: Math.round(window.scrollY),
+      scrollHeight: Math.round(sh),
+      scrollMax: Math.max(0, Math.round(sh - vh)),
+      vh: Math.round(vh),
+    };
+  };
+  const dbgPush = (type, extra) => {
+    if (!dbgOn() || !restoreRun) return;
+    const g = dbgGeom();
+    const ev = { t: Math.round(performance.now() - restoreRun.t0), type, ...g, ...extra };
+    restoreRun.events.push(ev);
+    try {
+      const log = (window.__xvmScrollRestoreLog = window.__xvmScrollRestoreLog || []);
+      log.push({ ...ev, runId: restoreRun.runId });
+      if (log.length > 2000) log.splice(0, log.length - 2000);
+    } catch (_) {}
+  };
+  // High-freq (~rAF) height/scroll sampler while a restore is active.
+  let hfRaf = 0;
+  let hfLastY = null;
+  let hfLastDir = 0; // -1 up (Y↓), +1 down (Y↑)
+  let hfOsc = [];
+  const stopHf = () => {
+    if (hfRaf) {
+      try { cancelAnimationFrame(hfRaf); } catch (_) {}
+      hfRaf = 0;
+    }
+  };
+  const startHf = () => {
+    stopHf();
+    if (!dbgOn() || !restoreRun) return;
+    hfLastY = window.scrollY;
+    hfLastDir = 0;
+    hfOsc = [];
+    restoreRun.hf = restoreRun.hf || [];
+    restoreRun.oscillations = restoreRun.oscillations || [];
+    const tick = () => {
+      if (!restoreRun) { hfRaf = 0; return; }
+      const g = dbgGeom();
+      const y = g.scrollY;
+      const dy = hfLastY == null ? 0 : y - hfLastY;
+      const sample = {
+        t: Math.round(performance.now() - restoreRun.t0),
+        ...g,
+        dy,
+      };
+      const last = restoreRun.hf[restoreRun.hf.length - 1];
+      if (!last
+          || Math.abs(y - last.scrollY) >= 2
+          || Math.abs(g.scrollHeight - last.scrollHeight) >= 8
+          || sample.t - last.t >= 48) {
+        restoreRun.hf.push(sample);
+        if (restoreRun.hf.length > 400) restoreRun.hf.splice(0, restoreRun.hf.length - 400);
+      }
+      if (Math.abs(dy) >= 48) {
+        const dir = dy < 0 ? -1 : 1;
+        if (hfLastDir && dir !== hfLastDir) {
+          const osc = {
+            t: sample.t,
+            fromY: Math.round(hfLastY),
+            toY: y,
+            prevDir: hfLastDir < 0 ? 'up' : 'down',
+            nextDir: dir < 0 ? 'up' : 'down',
+            scrollMax: g.scrollMax,
+            scrollHeight: g.scrollHeight,
+          };
+          hfOsc.push(osc);
+          restoreRun.oscillations.push(osc);
+          dbgPush('oscillation', osc);
+        }
+        hfLastDir = dir;
+        hfLastY = y;
+      } else if (hfLastY == null) {
+        hfLastY = y;
+      }
+      hfRaf = requestAnimationFrame(tick);
+    };
+    hfRaf = requestAnimationFrame(tick);
+  };
+  const natScrollTo = window.scrollTo.bind(window);
+  const natScrollBy = window.scrollBy.bind(window);
+  const inDefend = () => performance.now() < defendUntil;
+  const bumpDefend = (ms) => {
+    const until = performance.now() + ms;
+    if (until > defendUntil) defendUntil = until;
+  };
+  const scrollEl = () => document.scrollingElement || document.documentElement;
+  function pageScrollHeight() {
+    const se = scrollEl();
+    return Math.max(
+      se?.scrollHeight || 0,
+      document.documentElement?.scrollHeight || 0,
+      document.body?.scrollHeight || 0,
+    );
+  }
+  function maxScrollY() {
+    const sh = pageScrollHeight();
+    const vh = window.innerHeight || document.documentElement?.clientHeight || 0;
+    return Math.max(0, sh - vh);
+  }
+  function canReachY(y) {
+    return maxScrollY() >= Math.max(0, Math.round(y)) - 32;
+  }
+  // Pin/repin: short custom ease (~260ms). Native behavior:"smooth" fights
+  // X's virtualizer (cells unload mid-tween). Coarse stays instant. Small
+  // deltas snap — smooth only helps the unavoidable deep return hop.
+  const EASE_MS = 260;
+  const EASE_MIN_DIST = 120; // px; below this, instant is cleaner
+  let easeRaf = 0;
+  let easeToken = 0;
+  let easeTarget = null;
+  function cancelEase() {
+    if (easeRaf) {
+      try { cancelAnimationFrame(easeRaf); } catch (_) {}
+      easeRaf = 0;
+    }
+    easeToken += 1;
+    easeTarget = null;
+  }
+  function forceScrollBehaviorAuto() {
+    try {
+      const root = document.documentElement;
+      if (root && root.style) root.style.scrollBehavior = 'auto';
+      if (document.body && document.body.style) document.body.style.scrollBehavior = 'auto';
+    } catch (_) {}
+  }
+  function writeScrollY(y) {
+    forceScrollBehaviorAuto();
+    const target = Math.max(0, Math.round(y));
+    allowScroll = true;
+    try {
+      natScrollTo(0, target);
+      const se = scrollEl();
+      if (se && Math.abs((se.scrollTop || 0) - target) > 1) {
+        try { se.scrollTop = target; } catch (_) {}
+      }
+    } finally {
+      allowScroll = false;
+    }
+  }
+  function writeScrollYSoft(y) {
+    // Intermediate ease frames: prefer scrollTop so we own the tween and
+    // do not flood window.scrollTo (tests + X listeners).
+    forceScrollBehaviorAuto();
+    const target = Math.max(0, Math.round(y));
+    allowScroll = true;
+    try {
+      const se = scrollEl();
+      if (se) {
+        try { se.scrollTop = target; } catch (_) { natScrollTo(0, target); }
+      } else {
+        natScrollTo(0, target);
+      }
+    } finally {
+      allowScroll = false;
+    }
+  }
+  function noteControlledMove(kind, target) {
+    if (!restoreRun) return;
+    restoreRun.jumps += 1;
+    if (kind === 'coarse') restoreRun.coarse += 1;
+    else if (kind === 'pin' || kind === 'repin') {
+      if (restoreRun.firstPinAt == null) restoreRun.firstPinAt = performance.now() - restoreRun.t0;
+      if (kind === 'repin') restoreRun.repins += 1;
+      else restoreRun.pins += 1;
+    }
+    restoreRun.lastMoveAt = performance.now() - restoreRun.t0;
+    dbgPush(kind || 'scroll', { y: target, scrollY: window.scrollY, max: maxScrollY() });
+  }
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+  function controlledScrollTo(y, kind) {
+    const target = Math.max(0, Math.round(y));
+    // Refuse clamped coarse: a no-op clamp is still a visible hop to the wrong window.
+    if (kind === 'coarse' && !canReachY(target)) {
+      dbgPush('coarse_skip_clamp', { y: target, max: maxScrollY(), scrollY: window.scrollY });
+      return false;
+    }
+    const from = window.scrollY;
+    const dist = Math.abs(target - from);
+    const wantEase = (kind === 'pin' || kind === 'repin') && dist >= EASE_MIN_DIST;
+
+    // Already easing to the same place — coalesce (step() re-calls every frame).
+    if (wantEase && easeRaf && easeTarget != null && Math.abs(easeTarget - target) <= 48) {
+      return true;
+    }
+
+    if (!wantEase) {
+      cancelEase();
+      writeScrollY(target);
+      noteControlledMove(kind, target);
+      return true;
+    }
+
+    cancelEase();
+    easeTarget = target;
+    const token = easeToken;
+    const t0 = performance.now();
+    const startY = from;
+    const delta = target - startY;
+    noteControlledMove(kind, target);
+    bumpDefend(EASE_MS + DEFEND_PAD_MS);
+    dbgPush('ease_start', { from: Math.round(startY), to: target, ms: EASE_MS });
+
+    const tick = () => {
+      if (token !== easeToken) return;
+      const elapsed = performance.now() - t0;
+      const t = Math.min(1, elapsed / EASE_MS);
+      const yNow = startY + delta * easeOutCubic(t);
+      if (t >= 1) {
+        easeRaf = 0;
+        easeTarget = null;
+        writeScrollY(target);
+        dbgPush('ease_end', { y: target, scrollY: window.scrollY });
+        return;
+      }
+      writeScrollYSoft(yNow);
+      easeRaf = requestAnimationFrame(tick);
+    };
+    easeRaf = requestAnimationFrame(tick);
+    return true;
+  }
+  window.scrollTo = function (...args) {
+    if (inDefend() && !allowScroll) {
+      suppressedScrolls += 1;
+      if (restoreRun) restoreRun.suppressed += 1;
+      dbgPush('suppress_scrollTo');
+      return;
+    }
+    return natScrollTo(...args);
+  };
+  window.scrollBy = function (...args) {
+    if (inDefend() && !allowScroll) {
+      suppressedScrolls += 1;
+      if (restoreRun) restoreRun.suppressed += 1;
+      dbgPush('suppress_scrollBy');
+      return;
+    }
+    return natScrollBy(...args);
+  };
+  // X sometimes sets scrollingElement.scrollTop directly (bypassing
+  // window.scrollTo). Hold the property during defend; our controlled
+  // path sets allowScroll first so it still writes.
+  (function hookScrollTop() {
+    const targets = [];
+    try { if (document.documentElement) targets.push(document.documentElement); } catch (_) {}
+    try {
+      const se = document.scrollingElement;
+      if (se && se !== document.documentElement) targets.push(se);
+    } catch (_) {}
+    for (const el of targets) {
+      try {
+        const desc = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollTop')
+          || Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), 'scrollTop');
+        if (!desc || !desc.set || el.__xvmScrollTopHooked) continue;
+        const rawGet = desc.get.bind(el);
+        const rawSet = desc.set.bind(el);
+        Object.defineProperty(el, 'scrollTop', {
+          configurable: true,
+          get() { return rawGet(); },
+          set(v) {
+            if (inDefend() && !allowScroll) {
+              suppressedScrolls += 1;
+              if (restoreRun) restoreRun.suppressed += 1;
+              dbgPush('suppress_scrollTop');
+              return;
+            }
+            rawSet(v);
+          },
+        });
+        el.__xvmScrollTopHooked = true;
+      } catch (_) {}
+    }
+  })();
+  try {
+    Object.defineProperty(window, '__xvmScrollRestoreLast', {
+      configurable: true,
+      get() { return restoreRun ? { ...restoreRun, events: restoreRun.events.slice() } : window.__xvmScrollRestoreFinished || null; },
+    });
+  } catch (_) {}
+
   const pageKey = () => {
     const m = window.location.pathname.match(/\/status\/(\d+)/);
     if (m) return m[1];
@@ -4916,11 +5237,8 @@ else document.addEventListener('DOMContentLoaded', startMenuObserver);
     return path;
   };
 
-  // X's restore stays broken for the whole page once any cell was
-  // collapsed — even when the virtualizer has since unmounted every marked
-  // cell (long threads, reading far from the filtered cluster). Remember
-  // per-pageKey that hides were seen so the guard doesn't go inert (or
-  // worse, erase a good record) just because no marker is mounted right now.
+  const isFeedKey = (id) => typeof id === 'string' && id.startsWith('/');
+
   const hadHides = new Set();
   function pageHasHides(id) {
     if (document.querySelector(HIDE_SEL)) {
@@ -4930,34 +5248,148 @@ else document.addEventListener('DOMContentLoaded', startMenuObserver);
     return id ? hadHides.has(id) : false;
   }
 
-  // Best signal: the tweet the user is about to click into. Captured at
-  // pointerdown — before X's pre-navigation scrollIntoView churn can pollute
-  // scroll-event samples — so the back-correction can put that exact tweet
-  // back at the exact offset it was clicked at. Runs on both conversation
-  // pages (reply click) and feed surfaces (home/list tweet click).
+  function shouldArm(id) {
+    if (!id) return false;
+    if (isFeedKey(id)) return true;
+    return pageHasHides(id);
+  }
+
+  function isUsableArticle(art) {
+    if (!art) return false;
+    if (art.matches?.(HIDE_SEL) || art.closest?.(HIDE_SEL)) return false;
+    if (art.closest?.('[role="dialog"], [aria-hidden="true"], [hidden], [inert]')) return false;
+    const r = art.getBoundingClientRect();
+    return r.height > 0 && r.width > 0;
+  }
+
+  function feedShellReady(id) {
+    if (!isFeedKey(id)) return true;
+    const primary = document.querySelector('[data-testid="primaryColumn"]');
+    if (!primary) return true;
+    if (id === '/home') return !!primary.querySelector('[role="tablist"]');
+    return true;
+  }
+
+  function expectedDocTop(want, anchorTop) {
+    return (want?.y || 0) + (Number.isFinite(anchorTop) ? anchorTop : (want?.anchorTop || 0));
+  }
+
+  // Reject detail leftovers / wrong-window cells: their document Y is nowhere
+  // near the saved reading position (classic false pin to y≈174).
+  function isPlausibleHit(art, want, anchorTop) {
+    if (!art || !want) return false;
+    const docTop = window.scrollY + art.getBoundingClientRect().top;
+    const expected = expectedDocTop(want, anchorTop);
+    const slack = Math.max(900, Math.min(2800, Math.abs(want.y) * 0.22 + 500));
+    if (Math.abs(docTop - expected) <= slack) return true;
+    // Deep save + shallow cell while we still cannot scroll there → leftover.
+    if (want.y > (window.innerHeight || 800) && !canReachY(want.y)) {
+      if (docTop < (window.innerHeight || 800) * 2) return false;
+    }
+    return false;
+  }
+
+  function collectVisibleAnchors(preferArt) {
+    const viewportHeight = window.innerHeight || document.documentElement?.clientHeight || 0;
+    const out = [];
+    const seen = new Set();
+    const push = (art) => {
+      if (!isUsableArticle(art)) return;
+      const tid = getTweetIdFromArticle(art);
+      if (!tid || seen.has(tid)) return;
+      seen.add(tid);
+      out.push({
+        id: tid,
+        top: Math.round(art.getBoundingClientRect().top),
+      });
+    };
+    if (preferArt) push(preferArt);
+    const fully = [];
+    const partial = [];
+    for (const art of document.querySelectorAll('article[data-testid="tweet"]')) {
+      if (preferArt && art === preferArt) continue;
+      if (!isUsableArticle(art)) continue;
+      const r = art.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= viewportHeight) continue;
+      const tid = getTweetIdFromArticle(art);
+      if (!tid) continue;
+      const entry = { art, top: r.top, tid };
+      if (r.top >= 0 && r.bottom <= viewportHeight) fully.push(entry);
+      else partial.push(entry);
+    }
+    fully.sort((a, b) => a.top - b.top);
+    partial.sort((a, b) => {
+      const score = (t) => (t.top >= 0 ? t.top : viewportHeight + Math.abs(t.top));
+      return score(a) - score(b);
+    });
+    for (const entry of [...fully, ...partial]) {
+      if (seen.has(entry.tid)) continue;
+      seen.add(entry.tid);
+      out.push({ id: entry.tid, top: Math.round(entry.top) });
+      if (out.length >= MAX_ANCHORS) break;
+    }
+    return out.slice(0, MAX_ANCHORS);
+  }
+
+  function findAnchorArticle(anchorId, targetTop) {
+    if (!anchorId) return null;
+    let best = null;
+    let bestScore = Infinity;
+    for (const art of document.querySelectorAll('article[data-testid="tweet"]')) {
+      if (getTweetIdFromArticle(art) !== anchorId) continue;
+      if (!isUsableArticle(art)) continue;
+      const top = art.getBoundingClientRect().top;
+      const score = Number.isFinite(targetTop) ? Math.abs(top - targetTop) : 0;
+      // Prefer cells whose document position is deeper when multiple copies
+      // exist (detail leftover near top vs feed cell).
+      const docTop = window.scrollY + top;
+      const depthBias = docTop < 400 ? 50 : 0;
+      const s = score + depthBias;
+      if (s < bestScore) {
+        best = art;
+        bestScore = s;
+      }
+    }
+    return best;
+  }
+
+  function findBestAvailable(want) {
+    const list = Array.isArray(want?.anchors) && want.anchors.length
+      ? want.anchors
+      : (want?.anchorId ? [{ id: want.anchorId, top: want.anchorTop || 0 }] : []);
+    // Prefer clicked id (anchors[0]) when plausible; then fallbacks.
+    for (const a of list) {
+      const art = findAnchorArticle(a.id, a.top);
+      if (art && isPlausibleHit(art, want, a.top)) return { art, top: a.top, id: a.id };
+    }
+    return null;
+  }
+
   document.addEventListener('pointerdown', (e) => {
     if (watch) return;
     const id = pageKey();
-    if (!id) return;
+    if (!shouldArm(id)) return;
     const art = e.target?.closest?.('article[data-testid="tweet"]');
     if (!art || art.closest('[role="dialog"]')) return;
     if (art.matches(HIDE_SEL) || art.closest(HIDE_SEL)) return;
-    if (!pageHasHides(id)) return;
     const tid = getTweetIdFromArticle(art);
     if (!tid) return;
+    const anchors = collectVisibleAnchors(art);
+    if (!anchors.length) {
+      anchors.push({
+        id: tid,
+        top: Math.round(art.getBoundingClientRect().top),
+      });
+    }
     saved.set(id, {
       y: Math.round(window.scrollY),
-      anchorId: tid,
-      anchorTop: Math.round(art.getBoundingClientRect().top),
-      // Shields this entry from scroll-sample overwrites while X's
-      // pre-navigation scrollIntoView churn fires right after the click.
+      anchors,
+      anchorId: anchors[0].id,
+      anchorTop: anchors[0].top,
       clickTs: performance.now(),
     });
   }, true);
 
-  // Fallback signal: continuously record the reading position while on a
-  // filtered feed/conversation. rAF-throttled; paused while a correction
-  // runs so X's broken restore can't overwrite the good value.
   function record() {
     if (recScheduled || watch) return;
     recScheduled = true;
@@ -4965,104 +5397,226 @@ else document.addEventListener('DOMContentLoaded', startMenuObserver);
       recScheduled = false;
       if (watch) return;
       const id = pageKey();
-      if (!id) return;
-      if (!pageHasHides(id)) {
-        saved.delete(id);
+      if (!shouldArm(id)) {
+        if (id) saved.delete(id);
         return;
       }
-      // A fresh click capture is more precise than any scroll sample — and
-      // the scroll events X fires while navigating away (scrollIntoView on
-      // the clicked tweet, scroll-to-top for the next page) would corrupt
-      // it. Let it stand until it's clearly stale.
       const prev = saved.get(id);
       if (prev && prev.clickTs !== undefined && performance.now() - prev.clickTs < 2000) return;
-      // Anchor = topmost visible tweet: survives layout changes that make a
-      // raw scrollY stale (cells collapsing/expanding above the viewport).
-      let anchorId = null;
-      let anchorTop = 0;
-      let best = Infinity;
-      for (const art of document.querySelectorAll('article[data-testid="tweet"]')) {
-        // A filtered article may be transiently visible right now (hides
-        // re-apply a frame behind X's renders) but collapsed by the time we
-        // correct against it — never anchor on one.
-        if (art.matches(HIDE_SEL) || art.closest(HIDE_SEL)) continue;
-        const r = art.getBoundingClientRect();
-        if (!r.height || r.bottom <= 0 || r.top >= best) continue;
-        const tid = getTweetIdFromArticle(art);
-        if (!tid) continue;
-        best = r.top;
-        anchorId = tid;
-        anchorTop = Math.round(r.top);
-      }
-      saved.set(id, { y: Math.round(window.scrollY), anchorId, anchorTop });
+      const anchors = collectVisibleAnchors(null);
+      saved.set(id, {
+        y: Math.round(window.scrollY),
+        anchors,
+        anchorId: anchors[0]?.id || null,
+        anchorTop: anchors[0]?.top || 0,
+      });
     });
   }
   window.addEventListener('scroll', record, { passive: true });
 
-  function findAnchorArticle(anchorId) {
-    if (!anchorId) return null;
-    for (const art of document.querySelectorAll('article[data-testid="tweet"]')) {
-      if (getTweetIdFromArticle(art) !== anchorId) continue;
-      // Collapsed (hidden) articles report a zero rect — useless as a
-      // scroll reference; the caller falls back to the raw saved offset.
-      return art.getBoundingClientRect().height > 0 ? art : null;
-    }
-    return null;
-  }
-
-  // Veil: X restores to the wrong spot visibly, then our correction moves
-  // the page again — two visible jumps. Masking the content column (via a
-  // style rule, because X recreates <main> on back-navigation, so inline
-  // styles on the old node would be lost) from popstate until the
-  // correction lands turns that into one seamless fade-in at the right
-  // position, matching X's own skeleton-transition feel.
-  let veilTimer = 0;
-  function veilOn() {
-    if (document.getElementById('xvm-restore-veil')) return;
-    const s = document.createElement('style');
-    s.id = 'xvm-restore-veil';
-    s.textContent = 'main[role="main"]{opacity:0!important}';
-    document.documentElement.appendChild(s);
-    // Never leave the page masked if the watch dies without finishing.
-    clearTimeout(veilTimer);
-    veilTimer = setTimeout(veilOff, 2500);
-  }
-  function veilOff() {
-    clearTimeout(veilTimer);
-    const s = document.getElementById('xvm-restore-veil');
-    if (!s) return;
-    // Swapping the rule to a transition (instead of removing it) animates
-    // opacity 0 → 1 on whatever <main> exists by now.
-    s.textContent = 'main[role="main"]{transition:opacity .12s ease}';
-    setTimeout(() => s.remove(), 200);
-  }
-
-  window.addEventListener('popstate', () => {
+  function beginRestore(source) {
     const id = pageKey();
     const want = id && saved.get(id);
     if (!want) return;
-    veilOn();
-    const state = { id };
+    const hasHides = pageHasHides(id);
+    const needsRepin = hasHides || isFeedKey(id);
+    const postGuardMs = hasHides ? POST_GUARD_HIDE_MS : POST_GUARD_FEED_MS;
+    if (watch && typeof watch.abort === 'function') {
+      try { watch.abort(); } catch (_) {}
+    }
+    const state = { id, source };
     watch = state;
     const t0 = performance.now();
+    if (dbgOn()) {
+      restoreRun = {
+        runId: Math.round(t0),
+        source,
+        id,
+        t0,
+        jumps: 0,
+        coarse: 0,
+        pins: 0,
+        repins: 0,
+        suppressed: 0,
+        firstPinAt: null,
+        lastMoveAt: 0,
+        finishedAt: null,
+        events: [],
+      };
+      dbgPush('begin', {
+        wantY: want.y,
+        max: maxScrollY(),
+        canReach: canReachY(want.y),
+        anchors: (want.anchors || []).length,
+      });
+      startHf();
+    } else {
+      restoreRun = null;
+      stopHf();
+    }
+    bumpDefend(postGuardMs + DEFEND_PAD_MS);
     let lastY = window.scrollY;
     let lastMove = t0;
-    let corrected = false;
-    const finish = () => {
+    let pinned = false;
+    let didCoarse = false;
+    let stableSince = null;
+    let driftSince = null;
+    let mo = null;
+    const finish = (reason = 'quiet') => {
       if (watch === state) watch = null;
-      veilOff();
+      cancelEase();
+      if (mo) {
+        try { mo.disconnect(); } catch (_) {}
+        mo = null;
+      }
       for (const ev of USER_EVENTS) window.removeEventListener(ev, onUserInput);
+      // User cancel / hard stop → drop defend. Quiet success → keep
+      // suppressing X briefly so its late scrollTo cannot yank us off.
+      if (reason === 'user' || reason === 'timeout' || reason === 'hard') {
+        defendUntil = 0;
+      } else {
+        bumpDefend(DEFEND_TAIL_MS);
+      }
+      if (restoreRun && restoreRun.t0 === t0) {
+        restoreRun.finishedAt = performance.now() - t0;
+        restoreRun.stableAt = restoreRun.lastMoveAt ?? restoreRun.firstPinAt ?? restoreRun.finishedAt;
+        restoreRun.finishReason = reason;
+        stopHf();
+        const dirs = (restoreRun.oscillations || []).map((o) => `${o.prevDir[0]}>${o.nextDir[0]}`);
+        restoreRun.flashPattern = dirs.join('|') || 'none';
+        dbgPush('finish', {
+          reason,
+          jumps: restoreRun.jumps,
+          coarse: restoreRun.coarse,
+          pins: restoreRun.pins,
+          repins: restoreRun.repins,
+          suppressed: restoreRun.suppressed,
+          firstPinAt: restoreRun.firstPinAt,
+          stableAt: restoreRun.stableAt,
+          finishedAt: restoreRun.finishedAt,
+          defendTailMs: reason === 'user' || reason === 'timeout' || reason === 'hard' ? 0 : DEFEND_TAIL_MS,
+          oscillations: (restoreRun.oscillations || []).length,
+          flashPattern: restoreRun.flashPattern,
+          hfSamples: (restoreRun.hf || []).length,
+        });
+        try {
+          window.__xvmScrollRestoreFinished = {
+            ...restoreRun,
+            events: restoreRun.events.slice(),
+            hf: (restoreRun.hf || []).slice(),
+            oscillations: (restoreRun.oscillations || []).slice(),
+          };
+        } catch (_) {}
+        restoreRun = null;
+      } else {
+        stopHf();
+      }
     };
-    // The user taking over scrolling outranks any correction — but the
-    // macOS two-finger swipe-back gesture keeps emitting inertial wheel
-    // events (deltaX-dominant) for up to ~1s AFTER the navigation lands,
-    // and those must not count as the user scrolling the restored page.
+    state.abort = () => finish('hard');
     const USER_EVENTS = ['wheel', 'touchstart', 'mousedown', 'keydown'];
+    const SCROLL_KEYS = new Set([
+      'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Space',
+    ]);
     const onUserInput = (e) => {
       if (e.type === 'wheel' && Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return;
-      finish();
+      if (e.type === 'keydown') {
+        const key = e.key || e.code;
+        if (!SCROLL_KEYS.has(key)) return;
+      }
+      finish('user');
     };
     for (const ev of USER_EVENTS) window.addEventListener(ev, onUserInput, { passive: true });
+
+    const applyPin = (hit, d, now) => {
+      const thresh = pinned ? REPIN_THRESH : PIN_THRESH;
+      if (Math.abs(d) > thresh) {
+        if (pinned) {
+          if (driftSince == null) driftSince = now;
+          if (now - driftSince < REPIN_PERSIST_MS) {
+            dbgPush('repin_wait', { d, waited: Math.round(now - driftSince) });
+            return false;
+          }
+        }
+        controlledScrollTo(window.scrollY + d, pinned ? 'repin' : 'pin');
+        lastY = window.scrollY;
+        lastMove = now;
+        stableSince = null;
+        driftSince = null;
+        bumpDefend(DEFEND_PAD_MS + 200);
+        pinned = true;
+        return true;
+      }
+      driftSince = null;
+      if (restoreRun && restoreRun.firstPinAt == null) {
+        restoreRun.firstPinAt = now - restoreRun.t0;
+        restoreRun.pins += 1;
+        dbgPush('pin_noop', { d, id: hit.id });
+      }
+      if (stableSince == null) stableSince = now;
+      pinned = true;
+      return true;
+    };
+    const tryPinNow = () => {
+      if (!feedShellReady(id)) return false;
+      const hit = findBestAvailable(want);
+      if (!hit) return false;
+      const d = hit.art.getBoundingClientRect().top - hit.top;
+      return applyPin(hit, d, performance.now());
+    };
+
+    // Height-stability tracker: avoid coarse into a still-growing virtual list.
+    let lastSh = pageScrollHeight();
+    let shQuietSince = t0;
+    const noteHeight = (now) => {
+      const sh = pageScrollHeight();
+      if (Math.abs(sh - lastSh) >= HEIGHT_STABLE_PX) {
+        lastSh = sh;
+        shQuietSince = now;
+        dbgPush('height_grow', { sh, max: maxScrollY() });
+        return false;
+      }
+      lastSh = sh;
+      return (now - shQuietSince) >= HEIGHT_STABLE_MS;
+    };
+    const mayCoarse = (now) => {
+      if (didCoarse) return false;
+      if (!canReachY(want.y)) return false;
+      if (Math.abs(window.scrollY - want.y) <= PIN_THRESH) return false;
+      const quiet = noteHeight(now);
+      const waited = now - t0;
+      // Prefer quiet height; fall back so we never stall forever.
+      return quiet || waited >= COARSE_FALLBACK_MS;
+    };
+
+    // First paint: pin if plausible anchor ready. Never coarse on the
+    // first frame — height is almost always mid-growth right after Back.
+    if (!tryPinNow()) {
+      dbgPush('wait_anchor', { scrollY: window.scrollY, max: maxScrollY(), wantY: want.y, sh: lastSh });
+    }
+
+    if (needsRepin && typeof MutationObserver === 'function') {
+      try {
+        mo = new MutationObserver(() => {
+          if (watch !== state) return;
+          lastMove = performance.now();
+        });
+        mo.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: [
+            'data-xvm-rate-hidden',
+            'data-xvm-content-filter-hidden',
+            'data-xvm-rate-filter-on',
+            'style',
+            'class',
+          ],
+        });
+      } catch (_) {
+        mo = null;
+      }
+    }
+
     const step = () => {
       if (watch !== state) return;
       const now = performance.now();
@@ -5071,43 +5625,77 @@ else document.addEventListener('DOMContentLoaded', startMenuObserver);
         lastY = y;
         lastMove = now;
       }
-      if (now - t0 > 6000) return finish();
-      // Wait for X's own restore to go quiet before judging it, so we never
-      // fight a scroll animation in progress. Kept tight (X settles within
-      // ~200ms of popstate in live traces): the sooner we correct, the less
-      // chance the user starts scrolling to find their place — which
-      // rightfully cancels the correction. Also covers the frame or two
-      // rate-filter needs to re-mark cells after the home timeline remounts.
-      if (now - t0 > 250 && now - lastMove > 220) {
-        if (!corrected) {
-          // Anchor-first: when the recorded tweet is mounted, judge (and
-          // fix) by its on-screen delta — X can be wrong by <200px of raw
-          // scrollY and still show the wrong content. The raw offset is
-          // only a fallback for when the anchor is virtualized out.
-          const art = findAnchorArticle(want.anchorId);
-          if (art) {
-            const d = art.getBoundingClientRect().top - want.anchorTop;
-            if (Math.abs(d) <= 24) return finish();
-            corrected = true;
-            window.scrollTo(0, Math.round(y + d));
-          } else {
-            if (Math.abs(y - want.y) <= 200) return finish();
-            corrected = true;
-            // Coarse jump to the saved offset — mounts the right timeline
-            // region — then the next quiet period fine-tunes on the anchor.
-            window.scrollTo(0, want.y);
+      if (now - t0 > 5000) return finish('timeout');
+
+      bumpDefend(Math.max(0, postGuardMs - (now - t0)) + DEFEND_PAD_MS);
+
+      // Keep height tracker warm every frame (also while shell not ready).
+      noteHeight(now);
+
+      if (!feedShellReady(id)) {
+        if (mayCoarse(now)) {
+          if (controlledScrollTo(want.y, 'coarse')) {
+            didCoarse = true;
+            lastY = window.scrollY;
+            lastMove = now;
+            shQuietSince = now;
+            lastSh = pageScrollHeight();
           }
+        }
+        if (now - t0 > 3500) return finish('timeout');
+        requestAnimationFrame(step);
+        return;
+      }
+
+      const hit = findBestAvailable(want);
+      if (hit) {
+        const d = hit.art.getBoundingClientRect().top - hit.top;
+        applyPin(hit, d, now);
+        // Quiet early-exit after a good pin. Pending repin_wait delays exit.
+        if (pinned && driftSince == null && stableSince != null
+            && now - stableSince >= QUIET_STABLE_MS && Math.abs(d) <= QUIET_THRESH) {
+          return finish('quiet');
+        }
+        if (pinned && driftSince == null && now - t0 > postGuardMs && Math.abs(d) <= QUIET_THRESH) {
+          return finish('cap');
+        }
+      } else {
+        driftSince = null;
+        // Virtualizer height churn often unmounts the cell for a frame after
+        // a good pin. Keep stableSince if we are still near the saved Y so
+        // quiet-exit can fire.
+        const nearWant = Math.abs(y - want.y) <= Math.max(PIN_THRESH * 5, 140);
+        if (!(pinned && nearWant)) stableSince = null;
+        else if (stableSince == null) stableSince = now;
+        if (pinned && nearWant && stableSince != null
+            && now - stableSince >= QUIET_STABLE_MS) {
+          return finish('quiet_near');
+        }
+        // Prefer pin when the cell is mounted. Otherwise one coarse wake
+        // only after height has quieted (or fallback timeout). Never coarse
+        // again after a successful pin.
+        if (tryPinNow()) {
           lastY = window.scrollY;
           lastMove = now;
-        } else {
-          const art = findAnchorArticle(want.anchorId);
-          const d = art ? art.getBoundingClientRect().top - want.anchorTop : 0;
-          if (Math.abs(d) > 4) window.scrollTo(0, Math.round(window.scrollY + d));
-          return finish();
+        } else if (!pinned && mayCoarse(now)) {
+          if (controlledScrollTo(want.y, 'coarse')) {
+            didCoarse = true;
+            lastY = window.scrollY;
+            lastMove = now;
+            shQuietSince = now;
+            lastSh = pageScrollHeight();
+          }
         }
+        if (now - t0 > 3500) return finish('timeout');
       }
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
+  }
+
+  window.addEventListener('popstate', () => beginRestore('popstate'));
+  window.addEventListener('pageshow', (e) => {
+    if (e && e.persisted) beginRestore('bfcache');
   });
 })();
+

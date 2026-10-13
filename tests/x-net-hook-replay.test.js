@@ -17,6 +17,7 @@ function makeFakeResponse(url) {
   const r = {
     status: 200,
     statusText: 'OK',
+    url: String(url || ''),
     headers: new Headers({ 'content-type': 'application/json' }),
     json: async () => ({ url, payload: 'ok' }),
     text: async () => JSON.stringify({ url, payload: 'ok' }),
@@ -135,6 +136,15 @@ describe('x-net-hook response replay buffer', () => {
       payload: 'ok',
       patched: true,
     });
+  });
+
+  it('preserves response.url when a fetch patcher rewrites the body', async () => {
+    const { net, win } = loadHook();
+    const URL = 'https://x.com/i/api/graphql/abc/HomeTimeline?variables=1';
+    net.onResponsePatch(/HomeTimeline/, ({ json }) => ({ ...json, patched: true }));
+    const res = await win.fetch(URL);
+    expect(res.url).toBe(URL);
+    expect(await res.json()).toMatchObject({ patched: true });
   });
 
   it('lets an XHR response patcher replace JSON before the caller receives it', () => {
